@@ -1,52 +1,60 @@
 # User Stories: SDLC Artifact Automation Platform
 
-**Total User Stories:** 4
-**Estimated Effort:** 16 days
+**Total User Stories:** 6
+**Estimated Effort:** 20 days
 
 ## Sprint Week 1: Frontend Development
 
-### US101: Develop React frontend for artifact uploads and reviews
-Create a React web interface for users to upload raw requirements, review generated artifacts, and provide human validation.
+### US1: Implement file upload functionality
+Develop a React web interface for uploading raw requirements files.
 
 **Acceptance Criteria:**
-- The frontend should support file uploads in PDF, DOCX, and text formats.
-- Users should be able to review and approve generated artifacts.
-- The interface should provide clear feedback on the validation status of artifacts.
+- AC7
 
-**Linked FRs:** NFR1
+**Linked FRs:** FR1
 
 ## Sprint Week 2: AI Agent Development
 
-### US102: Implement AI-driven artifact conversion
-Develop AI agents using Python and LangGraph + HuggingFace models to convert raw requirements into structured SDLC artifacts.
+### US2: Develop AI-driven conversion logic
+Create AI agents to convert raw requirements into structured SDLC artifacts.
 
 **Acceptance Criteria:**
-- AI agents should be able to process various types of raw requirements.
-- Generated artifacts should be of high quality and structured.
-- The system should support customization of AI agents for different artifact types.
+- AC1
 
-**Linked FRs:** FR1, FR4, AC6, AC9
+**Linked FRs:** FR1, FR4
 
-## Sprint Week 3: Backend Integration
+## Sprint Week 3: Integration and Validation
 
-### US103: Integrate backend with AI agents and Jira API
-Orchestrate the backend to integrate with AI agents and Jira API for artifact generation and integration into Jira workflows.
+### US3: Implement human validation checkpoints
+Add human validation checkpoints to ensure all generated artifacts are validated.
 
 **Acceptance Criteria:**
-- The backend should communicate with AI agents using MCP protocol.
-- Generated artifacts should be automatically integrated into Jira workflows.
-- The system should handle validation and retry logic for artifact generation.
+- AC2
 
-**Linked FRs:** FR2, FR3, FR6, AC2, AC3, AC6
+**Linked FRs:** FR2
 
-## Sprint Week 4: Version Control Integration
-
-### US104: Store generated artifacts in version-controlled manner using GitHub
-Implement version-controlled storage of generated artifacts in GitHub.
+### US4: Integrate with Jira API
+Automatically integrate generated artifacts into Jira workflows.
 
 **Acceptance Criteria:**
-- All generated artifacts should be stored in a version-controlled manner.
-- The system should support branching and merging of artifact versions.
-- The backend should integrate with GitHub API for artifact versioning.
+- AC3
 
-**Linked FRs:** FR5, AC5, NFR4
+**Linked FRs:** FR3
+
+## Sprint Week 4: Quality Assurance
+
+### US5: Implement version control and storage in GitHub
+Store all generated artifacts in a version-controlled manner using GitHub.
+
+**Acceptance Criteria:**
+- AC5
+
+**Linked FRs:** FR5
+
+### US6: Ensure quality via validation, retry logic, and structured outputs
+Implement validation, retry logic, and structured outputs to ensure high-quality artifacts.
+
+**Acceptance Criteria:**
+- AC6
+
+**Linked FRs:** FR6
