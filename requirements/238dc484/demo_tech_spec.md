@@ -10,9 +10,9 @@
 
 ### Key Design Decisions
 
-- Use Microservices architecture for scalability and maintainability
-- Implement human validation checkpoints for quality assurance
-- Integrate with Jira and GitHub APIs for workflow automation and version control
+- Use of AI agents for different artifact types
+- Integration with Jira and GitHub APIs
+- Microservices architecture for scalability and maintainability
 
 ## 2. Data Model
 
@@ -22,7 +22,7 @@
 |-------|------|-------------|
 | id | UUID | Unique identifier for the requirement |
 | content | Text | Raw content of the requirement |
-| status | String | Current status of the requirement (e.g., pending, validated, approved) |
+| status | String | Current status of the requirement (e.g., pending, validated, converted) |
 
 **Relationships:** Artifact
 
@@ -31,7 +31,7 @@
 | Field | Type | Description |
 |-------|------|-------------|
 | id | UUID | Unique identifier for the artifact |
-| type | String | Type of artifact (e.g., Use Case, Requirement, Test Case) |
+| type | String | Type of the artifact (e.g., User Story, Task, Bug) |
 | content | Text | Structured content of the artifact |
 | requirement_id | UUID | Foreign key to the Requirement entity |
 
@@ -41,71 +41,71 @@
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/requirements` | Upload raw requirements |
-| GET | `/requirements/{id}` | Get details of a specific requirement |
+| POST | `/upload` | Upload raw requirements files |
+| GET | `/requirements` | Retrieve all requirements |
 | PUT | `/requirements/{id}/validate` | Mark a requirement as validated |
-| POST | `/artifacts` | Generate artifacts from requirements |
-| GET | `/artifacts/{id}` | Get details of a specific artifact |
+| POST | `/requirements/{id}/convert` | Convert a requirement into an artifact |
+| GET | `/artifacts` | Retrieve all artifacts |
 
-### POST `/requirements`
+### POST `/upload`
 
-Upload raw requirements
+Upload raw requirements files
 
-**Request Body:** Content of the requirement in PDF, DOCX, or text format
+**Request Body:** File
 
-**Response Body:** ID of the uploaded requirement
+**Response Body:** {'status': 'success', 'message': 'File uploaded successfully'}
 
-### GET `/requirements/{id}`
+### GET `/requirements`
 
-Get details of a specific requirement
+Retrieve all requirements
 
-**Response Body:** Details of the requirement including content and status
+**Response Body:** [{'id': '123', 'content': '...', 'status': 'pending'}]
 
 ### PUT `/requirements/{id}/validate`
 
 Mark a requirement as validated
 
-**Response Body:** Status of the validation
+**Response Body:** {'status': 'success', 'message': 'Requirement validated successfully'}
 
-### POST `/artifacts`
+### POST `/requirements/{id}/convert`
 
-Generate artifacts from requirements
+Convert a requirement into an artifact
 
-**Request Body:** ID of the requirement
+**Response Body:** {'status': 'success', 'message': 'Artifact created successfully'}
 
-**Response Body:** ID of the generated artifact
+### GET `/artifacts`
 
-### GET `/artifacts/{id}`
+Retrieve all artifacts
 
-Get details of a specific artifact
-
-**Response Body:** Details of the artifact including type and content
+**Response Body:** [{'id': '123', 'type': 'User Story', 'content': '...', 'requirement_id': '123'}]
 
 ## 4. Component Breakdown
 
 ### Frontend
 
-**Responsibility:** Provide a React web interface for uploads, review, and approvals
+**Responsibility:** Provides a React web interface for file uploads, review, and approvals.
 
 ### Backend
 
-**Responsibility:** Orchestrate the backend to integrate with AI agents and Jira API
+**Responsibility:** Orchestrates the conversion of raw requirements into structured artifacts and integrates with Jira and GitHub APIs.
 
-**Depends on:** AI Agents, Jira API
+**Depends on:** Frontend
 
-### AI Agents
+### AI Agent
 
-**Responsibility:** Develop AI agents using Python and LangGraph + HuggingFace models to convert raw requirements into structured SDLC artifacts
+**Responsibility:** Converts raw requirements into structured artifacts using AI models.
+
+**Depends on:** Backend
 
 ### Jira Integration
 
-**Responsibility:** Integrate generated artifacts into Jira workflows
+**Responsibility:** Integrates generated artifacts into Jira workflows.
 
 **Depends on:** Backend
 
 ### GitHub Integration
 
-**Responsibility:** Store all generated artifacts in a version-controlled manner using GitHub
+**Responsibility:** Stores all generated artifacts in a version-controlled manner using GitHub.
 
 **Depends on:** Backend
 
@@ -122,10 +122,12 @@ Get details of a specific artifact
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| AI agents may produce low-quality artifacts | High | Implement validation and retry logic, and continuously train and improve AI agents |
-| Integration with Jira and GitHub may fail | Medium | Thoroughly test API integrations and handle errors gracefully |
+| AI model accuracy | High | Regularly update and retrain AI models with new data. |
+| Integration with Jira and GitHub | Medium | Thoroughly test API integrations before deployment. |
+| Scalability issues | High | Design microservices architecture with load balancing and auto-scaling. |
 
 ## 7. Open Questions
 
 - What specific types of SDLC artifacts will be generated by the AI agents?
-- How will the AI agents handle different languages and formats of raw requirements?
+- How will human validation checkpoints be implemented?
+- What is the expected format of the raw requirements files?
