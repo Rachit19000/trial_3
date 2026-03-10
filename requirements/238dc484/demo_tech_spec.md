@@ -4,15 +4,15 @@
 
 **Project Name:** SDLC Artifact Automation Platform
 
-**Description:** An AI-driven platform to automate the conversion of raw requirements into structured SDLC artifacts and integrate them into Jira workflows.
+**Description:** A platform to automate the creation of structured SDLC artifacts from raw requirements, including requirements, user stories, and technical specifications, with human validation and integration into Jira workflows.
 
 **Architecture Pattern:** Microservices
 
 ### Key Design Decisions
 
-- Use of AI agents for different artifact types
-- Integration with Jira and GitHub APIs
-- Microservices architecture for scalability and maintainability
+- Use a microservices architecture to ensure scalability and maintainability.
+- Implement human validation checkpoints to ensure quality.
+- Integrate with GitHub for version control and storage.
 
 ## 2. Data Model
 
@@ -20,64 +20,59 @@
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the requirement |
-| content | Text | Raw content of the requirement |
-| status | String | Current status of the requirement (e.g., pending, validated, converted) |
+| id | UUID | Unique identifier for the requirement. |
+| content | TEXT | The raw content of the requirement. |
+| repo_name | VARCHAR(255) | Name of the repository where the requirement is stored. |
 
-**Relationships:** Artifact
+**Relationships:** UserStory, TechSpec
 
-### Entity: Artifact
+### Entity: UserStory
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the artifact |
-| type | String | Type of the artifact (e.g., User Story, Task, Bug) |
-| content | Text | Structured content of the artifact |
-| requirement_id | UUID | Foreign key to the Requirement entity |
+| id | UUID | Unique identifier for the user story. |
+| content | TEXT | The content of the user story. |
+| requirement_id | UUID | Foreign key to the Requirement entity. |
 
-**Relationships:** Requirement
+**Relationships:** TechSpec
+
+### Entity: TechSpec
+
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Unique identifier for the technical specification. |
+| content | TEXT | The content of the technical specification. |
+| user_story_id | UUID | Foreign key to the UserStory entity. |
 
 ## 3. API Design
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/upload` | Upload raw requirements files |
-| GET | `/requirements` | Retrieve all requirements |
-| PUT | `/requirements/{id}/validate` | Mark a requirement as validated |
-| POST | `/requirements/{id}/convert` | Convert a requirement into an artifact |
-| GET | `/artifacts` | Retrieve all artifacts |
+| GET | `/auth/github` | Authenticate with GitHub. |
+| POST | `/api/github/repos` | Fetch user's GitHub repositories. |
+| POST | `/api/requirements/upload` | Upload requirements to a specific repository. |
 
-### POST `/upload`
+### GET `/auth/github`
 
-Upload raw requirements files
+Authenticate with GitHub.
 
-**Request Body:** File
+**Response Body:** GitHub authentication URL.
 
-**Response Body:** {'status': 'success', 'message': 'File uploaded successfully'}
+### POST `/api/github/repos`
 
-### GET `/requirements`
+Fetch user's GitHub repositories.
 
-Retrieve all requirements
+**Request Body:** Authorization: Bearer SESSION_TOKEN
 
-**Response Body:** [{'id': '123', 'content': '...', 'status': 'pending'}]
+**Response Body:** List of repositories.
 
-### PUT `/requirements/{id}/validate`
+### POST `/api/requirements/upload`
 
-Mark a requirement as validated
+Upload requirements to a specific repository.
 
-**Response Body:** {'status': 'success', 'message': 'Requirement validated successfully'}
+**Request Body:** repo: 'string', requirements: 'string'
 
-### POST `/requirements/{id}/convert`
-
-Convert a requirement into an artifact
-
-**Response Body:** {'status': 'success', 'message': 'Artifact created successfully'}
-
-### GET `/artifacts`
-
-Retrieve all artifacts
-
-**Response Body:** [{'id': '123', 'type': 'User Story', 'content': '...', 'requirement_id': '123'}]
+**Response Body:** Confirmation message.
 
 ## 4. Component Breakdown
 
@@ -87,25 +82,19 @@ Retrieve all artifacts
 
 ### Backend
 
-**Responsibility:** Orchestrates the conversion of raw requirements into structured artifacts and integrates with Jira and GitHub APIs.
+**Responsibility:** Orchestrates the processing of raw requirements and integrates with GitHub.
 
 **Depends on:** Frontend
 
-### AI Agent
+### AI Agents
 
-**Responsibility:** Converts raw requirements into structured artifacts using AI models.
-
-**Depends on:** Backend
-
-### Jira Integration
-
-**Responsibility:** Integrates generated artifacts into Jira workflows.
+**Responsibility:** Converts raw requirements into structured SDLC artifacts.
 
 **Depends on:** Backend
 
 ### GitHub Integration
 
-**Responsibility:** Stores all generated artifacts in a version-controlled manner using GitHub.
+**Responsibility:** Handles version control and storage of artifacts.
 
 **Depends on:** Backend
 
@@ -122,12 +111,11 @@ Retrieve all artifacts
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| AI model accuracy | High | Regularly update and retrain AI models with new data. |
-| Integration with Jira and GitHub | Medium | Thoroughly test API integrations before deployment. |
-| Scalability issues | High | Design microservices architecture with load balancing and auto-scaling. |
+| Security vulnerabilities in OAuth flow | Potential unauthorized access to user data | Implement strict CSRF protection and validate state tokens. |
+| Inconsistent data between microservices | Data discrepancies and potential data loss | Implement a centralized event bus for change propagation. |
 
 ## 7. Open Questions
 
-- What specific types of SDLC artifacts will be generated by the AI agents?
-- How will human validation checkpoints be implemented?
-- What is the expected format of the raw requirements files?
+- What are the specific requirements for the AI agents?
+- How will the human validation checkpoints be implemented?
+- What are the detailed steps for integrating with Jira?
