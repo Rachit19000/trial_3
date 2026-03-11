@@ -1,180 +1,157 @@
-Movie Hall Management System
+Cab Booking System
 1. Introduction
 1.1 Purpose
 
-The purpose of the Movie Hall Management System is to automate the process of managing movie schedules, seat bookings, ticket generation, and customer management. The system helps movie hall administrators manage operations efficiently and allows customers to book tickets online.
+The purpose of the Cab Booking System is to allow users to book cabs online for traveling from one location to another. The system connects passengers with available drivers and manages bookings, payments, and ride history.
 
 1.2 Scope
 
-The system will allow administrators to manage movies, schedules, and theater seats, while customers can view movie listings, select seats, and book tickets. The system will maintain records of bookings and generate digital tickets.
+The system will enable users to register, book rides, track drivers, and make payments. Drivers can accept ride requests and manage their availability. Administrators manage users, drivers, and system operations.
 
 1.3 Definitions
 
-Customer – User who books movie tickets.
+Passenger – User who books the cab.
 
-Administrator – Person who manages movies, schedules, and theater operations.
+Driver – Person who accepts ride requests and provides transportation.
 
-Showtime – Scheduled time for a movie screening.
+Ride Request – Request created by a passenger to book a cab.
 
-Booking – Reservation of seats for a particular movie show.
+Trip – Completed journey from pickup to destination.
 
 2. Overall Description
 2.1 Product Perspective
 
-The Movie Hall Management System will be a web-based application connected to a database that stores movie details, booking information, and seat availability.
+The Cab Booking System will be a web/mobile-based application connected to a backend server and database to manage users, drivers, rides, and payments.
 
 2.2 Product Functions
 
-Major functions of the system include:
+Major system functions include:
 
-Movie management
+User registration and login
 
-Show scheduling
+Cab booking
 
-Seat management
+Driver allocation
 
-Ticket booking
+Ride tracking
 
 Payment processing
 
-Booking history
+Ride history management
 
 2.3 User Classes
 User Type	Description
-Administrator	Manages movies, schedules, and seat availability
-Customer	Views movies and books tickets
+Passenger	Books cabs and makes payments
+Driver	Accepts ride requests and completes trips
+Admin	Manages drivers, users, and ride data
 2.4 Operating Environment
 
-Web browser (Chrome, Edge, Firefox)
+Mobile app / Web browser
 
-Backend server (Java/Python/Node)
+Backend server (Node.js / Java / Python)
 
-Database (MySQL/PostgreSQL)
+Database (MySQL / PostgreSQL)
 
 3. Functional Requirements
 FR1: User Registration
 
-The system shall allow customers to register using personal details such as name, email, and password.
+The system shall allow passengers to register using name, phone number, and password.
 
 FR2: User Login
 
 The system shall allow registered users to log in securely.
 
-FR3: Movie Management
+FR3: Cab Booking
 
-The administrator shall be able to:
+Passengers shall be able to book a cab by entering pickup and destination locations.
 
-Add new movies
+FR4: Driver Assignment
 
-Update movie details
+The system shall assign the nearest available driver to the passenger.
 
-Remove movies from the system
+FR5: Ride Tracking
 
-FR4: Show Scheduling
+Passengers shall be able to track the driver’s location during the ride.
 
-The administrator shall schedule movie showtimes and assign them to specific halls.
+FR6: Ride Completion
 
-FR5: View Movies
+Drivers shall mark the ride as completed after reaching the destination.
 
-Customers shall be able to view:
+FR7: Payment Processing
 
-Movie list
+Passengers shall be able to pay through online payment methods or cash.
 
-Movie details
+FR8: Ride History
 
-Available showtimes
+Passengers shall be able to view their previous ride details.
 
-FR6: Seat Selection
+FR9: Driver Availability
 
-The system shall allow customers to select available seats for a movie show.
-
-FR7: Ticket Booking
-
-Customers shall be able to book tickets for selected seats.
-
-FR8: Payment Processing
-
-The system shall allow customers to make payments for booked tickets.
-
-FR9: Ticket Generation
-
-The system shall generate a digital ticket after successful booking.
-
-FR10: Booking History
-
-Customers shall be able to view their booking history.
+Drivers shall be able to update their availability status (online/offline).
 
 4. Non-Functional Requirements
 NFR1: Performance
 
-The system should process ticket bookings quickly and handle multiple users simultaneously.
+The system should process booking requests within a few seconds.
 
 NFR2: Security
 
-Secure authentication for users.
-
-Secure payment processing.
+User data and payment information must be securely stored.
 
 NFR3: Usability
 
-The system should have a simple and intuitive interface.
+The system interface should be simple and easy to use.
 
 NFR4: Reliability
 
-The system should ensure accurate seat availability and avoid double booking.
+The system should provide accurate driver allocation and ride tracking.
 
 NFR5: Scalability
 
-The system should support multiple movie halls and increasing user traffic.
+The system should support a large number of users and ride requests.
 
 5. System Features
-5.1 Movie Management
+5.1 User Management
 
-Add and update movie information.
+Register and manage passengers and drivers.
 
-Display movie details to customers.
+5.2 Booking System
 
-5.2 Show Management
+Request rides.
 
-Create and manage show schedules.
+Assign drivers automatically.
 
-Assign shows to specific halls.
+5.3 Ride Management
 
-5.3 Booking System
+Track rides.
 
-Display available seats.
+Record trip details.
 
-Allow seat selection.
+5.4 Payment System
 
-Confirm booking.
-
-5.4 Payment and Ticketing
-
-Secure payment gateway.
-
-Generate electronic tickets.
+Handle fare calculation and payments.
 
 6. External Interface Requirements
 6.1 User Interface
 
-A web-based interface for administrators and customers to interact with the system.
+Mobile or web interface for passengers and drivers.
 
 6.2 Database Interface
 
-The system will store and retrieve data such as:
+Stores data such as:
 
-Movie information
+User accounts
 
-Show schedules
+Driver information
 
-Seat availability
+Ride details
 
-Customer bookings
+Payment records
 
 7. Constraints
 
-Internet connectivity required for online booking.
+GPS required for location tracking.
 
-Seats cannot be double booked.
+Internet connection required for booking.
 
-Payment must be completed before ticket confirmation.
+Drivers must be verified before joining the system.
