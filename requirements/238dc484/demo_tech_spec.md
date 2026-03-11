@@ -11,8 +11,8 @@
 ### Key Design Decisions
 
 - Use microservices architecture for scalability and maintainability
-- Implement RESTful APIs for service communication
-- Use a database for persistent storage of data
+- Implement RESTful APIs for communication between services
+- Use a database to store application data
 
 ## 2. Data Model
 
@@ -23,8 +23,8 @@
 | id | UUID | Unique identifier for the user |
 | name | String | Name of the user |
 | email | String | Email address of the user |
-| password | String | Password of the user (hashed) |
-| role | String | Role of the user (Admin/Customer) |
+| password | String | Password of the user |
+| role | String | Role of the user (e.g., Administrator, Customer) |
 
 **Relationships:** Movie, Booking
 
@@ -36,6 +36,7 @@
 | title | String | Title of the movie |
 | description | String | Description of the movie |
 | duration | Integer | Duration of the movie in minutes |
+| poster_url | String | URL of the movie poster |
 
 **Relationships:** Show, Booking
 
@@ -44,8 +45,8 @@
 | Field | Type | Description |
 |-------|------|-------------|
 | id | UUID | Unique identifier for the show |
-| movie_id | UUID | Foreign key to the movie entity |
-| hall_id | UUID | Foreign key to the hall entity |
+| movie_id | UUID | Unique identifier for the movie |
+| hall_id | UUID | Unique identifier for the hall |
 | start_time | DateTime | Start time of the show |
 
 **Relationships:** Seat, Booking
@@ -66,11 +67,10 @@
 | Field | Type | Description |
 |-------|------|-------------|
 | id | UUID | Unique identifier for the booking |
-| user_id | UUID | Foreign key to the user entity |
-| show_id | UUID | Foreign key to the show entity |
-| seat_ids | Array<UUID> | Array of seat IDs for the booking |
-| total_amount | Decimal | Total amount for the booking |
-| status | String | Status of the booking (Pending/Paid) |
+| user_id | UUID | Unique identifier for the user |
+| show_id | UUID | Unique identifier for the show |
+| seat_ids | List<UUID> | List of seat IDs for the booking |
+| status | String | Status of the booking (e.g., Pending, Paid, Cancelled) |
 
 **Relationships:** User, Show
 
@@ -79,12 +79,13 @@
 | Method | Path | Description |
 |--------|------|-------------|
 | POST | `/users/register` | Register a new user |
-| POST | `/users/login` | Login a registered user |
+| POST | `/users/login` | Log in a user |
 | POST | `/movies` | Add a new movie |
 | PUT | `/movies/{id}` | Update movie details |
-| DELETE | `/movies/{id}` | Remove a movie |
+| DELETE | `/movies/{id}` | Remove a movie from the system |
 | POST | `/shows` | Schedule a new show |
 | GET | `/movies` | Get a list of movies |
+| GET | `/movies/{id}` | Get movie details |
 | GET | `/shows/{id}` | Get show details |
 | GET | `/seats/{show_id}` | Get available seats for a show |
 | POST | `/bookings` | Book seats for a show |
@@ -94,25 +95,25 @@
 
 Register a new user
 
-**Request Body:** User details including name, email, and password
+**Request Body:** User registration details
 
-**Response Body:** Confirmation message and user ID
+**Response Body:** User ID and confirmation message
 
 ### POST `/users/login`
 
-Login a registered user
+Log in a user
 
-**Request Body:** User credentials including email and password
+**Request Body:** User login credentials
 
-**Response Body:** Login confirmation and session token
+**Response Body:** Session token and login confirmation
 
 ### POST `/movies`
 
 Add a new movie
 
-**Request Body:** Movie details including title, description, and duration
+**Request Body:** Movie details
 
-**Response Body:** Confirmation message and movie ID
+**Response Body:** Movie ID and confirmation message
 
 ### PUT `/movies/{id}`
 
@@ -124,7 +125,7 @@ Update movie details
 
 ### DELETE `/movies/{id}`
 
-Remove a movie
+Remove a movie from the system
 
 **Response Body:** Confirmation message
 
@@ -132,9 +133,9 @@ Remove a movie
 
 Schedule a new show
 
-**Request Body:** Show details including movie ID, hall ID, and start time
+**Request Body:** Show details
 
-**Response Body:** Confirmation message and show ID
+**Response Body:** Show ID and confirmation message
 
 ### GET `/movies`
 
@@ -142,11 +143,17 @@ Get a list of movies
 
 **Response Body:** List of movies
 
+### GET `/movies/{id}`
+
+Get movie details
+
+**Response Body:** Movie details
+
 ### GET `/shows/{id}`
 
 Get show details
 
-**Response Body:** Show details including movie, hall, and start time
+**Response Body:** Show details
 
 ### GET `/seats/{show_id}`
 
@@ -158,47 +165,47 @@ Get available seats for a show
 
 Book seats for a show
 
-**Request Body:** Selected seat IDs
+**Request Body:** List of seat IDs
 
-**Response Body:** Confirmation message and booking ID
+**Response Body:** Booking ID and confirmation message
 
 ### GET `/bookings/{id}`
 
 Get booking details
 
-**Response Body:** Booking details including user, show, and seat IDs
+**Response Body:** Booking details
 
 ## 4. Component Breakdown
 
-### UserService
+### User Management Service
 
-**Responsibility:** Handles user registration, login, and authentication
+**Responsibility:** Handles user registration, login, and management
 
-**Depends on:** UserService
+**Depends on:** Authentication Service, Database
 
-### MovieService
+### Movie Management Service
 
-**Responsibility:** Manages movie details and scheduling
+**Responsibility:** Handles movie addition, update, and removal
 
-**Depends on:** UserService, ShowService
+**Depends on:** Database
 
-### ShowService
+### Show Management Service
 
-**Responsibility:** Manages show scheduling and seat availability
+**Responsibility:** Handles show scheduling and management
 
-**Depends on:** SeatService, MovieService
+**Depends on:** Database
 
-### SeatService
+### Booking Service
 
-**Responsibility:** Manages seat booking and availability
+**Responsibility:** Handles seat selection, booking, and ticket generation
 
-**Depends on:** ShowService
+**Depends on:** Database
 
-### BookingService
+### Payment Gateway Service
 
-**Responsibility:** Manages booking creation and status updates
+**Responsibility:** Handles payment processing
 
-**Depends on:** UserService, ShowService, SeatService
+**Depends on:** Database
 
 ## 5. Tech Stack
 
@@ -220,4 +227,4 @@ Get booking details
 ## 7. Open Questions
 
 - What is the exact payment gateway to be used?
-- What are the exact requirements for the digital ticket generation?
+- What are the specific requirements for the UI design?
