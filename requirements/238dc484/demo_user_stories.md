@@ -9,8 +9,9 @@
 Allow customers to register using personal details such as name, email, and password.
 
 **Acceptance Criteria:**
-- Customers can register with valid personal details.
-- Registration process is secure and data is stored securely.
+- Users can provide their name, email, and password during registration.
+- User details are stored securely in the database.
+- Registration process is completed successfully.
 
 **Linked FRs:** FR1
 
@@ -18,15 +19,16 @@ Allow customers to register using personal details such as name, email, and pass
 Allow registered users to log in securely.
 
 **Acceptance Criteria:**
-- Users can log in with valid credentials.
-- Login process is secure.
+- Users can provide their credentials during login.
+- Login process is completed successfully.
+- User is redirected to the dashboard upon successful login.
 
 **Linked FRs:** FR2
 
-## Sprint Week 2: Administrative Functions
+## Sprint Week 2: Admin Functions
 
 ### US3: Movie Management
-Allow administrators to add, update, and remove movies.
+Allow administrators to add, update, and remove movies from the system.
 
 **Acceptance Criteria:**
 - Administrators can add new movies.
@@ -39,8 +41,9 @@ Allow administrators to add, update, and remove movies.
 Allow administrators to schedule movie showtimes and assign them to specific halls.
 
 **Acceptance Criteria:**
-- Administrators can schedule new shows.
-- Shows are assigned to specific halls.
+- Administrators can schedule movie showtimes.
+- Showtimes are assigned to specific halls.
+- Showtimes are displayed in the system.
 
 **Linked FRs:** FR4
 
@@ -50,7 +53,7 @@ Allow administrators to schedule movie showtimes and assign them to specific hal
 Allow customers to view movie listings, details, and available showtimes.
 
 **Acceptance Criteria:**
-- Customers can view movie lists.
+- Customers can view a list of movies.
 - Customers can view movie details.
 - Customers can view available showtimes.
 
@@ -60,8 +63,9 @@ Allow customers to view movie listings, details, and available showtimes.
 Allow customers to select available seats for a movie show.
 
 **Acceptance Criteria:**
-- Customers can select available seats.
-- Selected seats are marked as booked.
+- Customers can view available seats.
+- Customers can select seats for a movie show.
+- Selected seats are highlighted.
 
 **Linked FRs:** FR6
 
@@ -72,7 +76,8 @@ Allow customers to book tickets for selected seats.
 
 **Acceptance Criteria:**
 - Customers can book tickets for selected seats.
-- Bookings are processed and confirmed.
+- Booking process is completed successfully.
+- Booking is stored in the system.
 
 **Linked FRs:** FR7
 
@@ -80,8 +85,9 @@ Allow customers to book tickets for selected seats.
 Allow customers to make payments for booked tickets.
 
 **Acceptance Criteria:**
-- Customers can make secure payments.
-- Payments are processed and confirmed.
+- Customers can make payments for booked tickets.
+- Payment process is completed successfully.
+- Payment is stored in the system.
 
 **Linked FRs:** FR8
 
@@ -89,8 +95,9 @@ Allow customers to make payments for booked tickets.
 Generate a digital ticket after successful booking.
 
 **Acceptance Criteria:**
-- Digital tickets are generated after successful booking.
-- Tickets are delivered to customers.
+- Digital ticket is generated after successful booking.
+- Ticket is stored in the system.
+- Ticket is accessible to the customer.
 
 **Linked FRs:** FR9
 
@@ -99,6 +106,7 @@ Allow customers to view their booking history.
 
 **Acceptance Criteria:**
 - Customers can view their booking history.
-- History is accurate and up-to-date.
+- Booking history is displayed in the system.
+- History is updated with new bookings.
 
 **Linked FRs:** FR10
