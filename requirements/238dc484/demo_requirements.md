@@ -1,174 +1,180 @@
-Library Management System
+Movie Hall Management System
 1. Introduction
 1.1 Purpose
 
-The purpose of the Library Management System (LMS) is to automate the management of library activities such as managing books, issuing and returning books, and maintaining member records. The system aims to reduce manual work and improve efficiency.
+The purpose of the Movie Hall Management System is to automate the process of managing movie schedules, seat bookings, ticket generation, and customer management. The system helps movie hall administrators manage operations efficiently and allows customers to book tickets online.
 
 1.2 Scope
 
-The Library Management System will allow librarians to manage books and members efficiently. Users (students or members) can search for books, borrow books, and return them. The system will maintain records of issued books, fines, and available inventory.
+The system will allow administrators to manage movies, schedules, and theater seats, while customers can view movie listings, select seats, and book tickets. The system will maintain records of bookings and generate digital tickets.
 
 1.3 Definitions
 
-Member – A registered user who can borrow books.
+Customer – User who books movie tickets.
 
-Librarian – Administrator who manages books and users.
+Administrator – Person who manages movies, schedules, and theater operations.
 
-Book Issue – Process of lending a book to a member.
+Showtime – Scheduled time for a movie screening.
 
-Book Return – Process of returning the borrowed book.
+Booking – Reservation of seats for a particular movie show.
 
 2. Overall Description
 2.1 Product Perspective
 
-The Library Management System will be a web-based application that interacts with a central database to manage library records.
+The Movie Hall Management System will be a web-based application connected to a database that stores movie details, booking information, and seat availability.
 
 2.2 Product Functions
 
-The system will provide the following major functions:
+Major functions of the system include:
 
-Book management
+Movie management
 
-Member management
+Show scheduling
 
-Book issuing and returning
+Seat management
 
-Book search
+Ticket booking
 
-Fine calculation
+Payment processing
 
-Record maintenance
+Booking history
 
 2.3 User Classes
 User Type	Description
-Librarian	Manages books, members, and transactions
-Member	Searches and borrows books
+Administrator	Manages movies, schedules, and seat availability
+Customer	Views movies and books tickets
 2.4 Operating Environment
 
-Web browser (Chrome, Firefox, Edge)
+Web browser (Chrome, Edge, Firefox)
 
-Server running backend (Java/Python/Node)
+Backend server (Java/Python/Node)
 
 Database (MySQL/PostgreSQL)
 
 3. Functional Requirements
 FR1: User Registration
 
-The system shall allow new members to register in the library system.
+The system shall allow customers to register using personal details such as name, email, and password.
 
 FR2: User Login
 
-The system shall allow registered users to log in using username and password.
+The system shall allow registered users to log in securely.
 
-FR3: Book Management
+FR3: Movie Management
 
-The librarian shall be able to:
+The administrator shall be able to:
 
-Add new books
+Add new movies
 
-Update book details
+Update movie details
 
-Delete books
+Remove movies from the system
 
-View available books
+FR4: Show Scheduling
 
-FR4: Search Books
+The administrator shall schedule movie showtimes and assign them to specific halls.
 
-The system shall allow users to search books by:
+FR5: View Movies
 
-Title
+Customers shall be able to view:
 
-Author
+Movie list
 
-ISBN
+Movie details
 
-Category
+Available showtimes
 
-FR5: Issue Book
+FR6: Seat Selection
 
-The librarian shall be able to issue books to members.
+The system shall allow customers to select available seats for a movie show.
 
-FR6: Return Book
+FR7: Ticket Booking
 
-The system shall allow members to return borrowed books.
+Customers shall be able to book tickets for selected seats.
 
-FR7: Fine Calculation
+FR8: Payment Processing
 
-The system shall automatically calculate fines if the book is returned after the due date.
+The system shall allow customers to make payments for booked tickets.
 
-FR8: View Borrowed Books
+FR9: Ticket Generation
 
-Members shall be able to view books currently borrowed.
+The system shall generate a digital ticket after successful booking.
+
+FR10: Booking History
+
+Customers shall be able to view their booking history.
 
 4. Non-Functional Requirements
 NFR1: Performance
 
-The system should respond to user requests within 2 seconds.
+The system should process ticket bookings quickly and handle multiple users simultaneously.
 
 NFR2: Security
 
-Users must authenticate before accessing the system.
+Secure authentication for users.
 
-Passwords must be securely stored.
+Secure payment processing.
 
 NFR3: Usability
 
-The interface should be simple and user-friendly.
+The system should have a simple and intuitive interface.
 
 NFR4: Reliability
 
-The system should maintain data consistency and avoid data loss.
+The system should ensure accurate seat availability and avoid double booking.
 
 NFR5: Scalability
 
-The system should support increasing number of books and users.
+The system should support multiple movie halls and increasing user traffic.
 
 5. System Features
-5.1 Book Management
+5.1 Movie Management
 
-Add new books
+Add and update movie information.
 
-Update book information
+Display movie details to customers.
 
-Delete books
+5.2 Show Management
 
-Track availability
+Create and manage show schedules.
 
-5.2 Member Management
+Assign shows to specific halls.
 
-Register new members
+5.3 Booking System
 
-Update member details
+Display available seats.
 
-View member records
+Allow seat selection.
 
-5.3 Borrowing System
+Confirm booking.
 
-Issue books
+5.4 Payment and Ticketing
 
-Return books
+Secure payment gateway.
 
-Maintain issue history
+Generate electronic tickets.
 
 6. External Interface Requirements
 6.1 User Interface
 
-The system will provide a web-based graphical interface for librarians and members.
+A web-based interface for administrators and customers to interact with the system.
 
 6.2 Database Interface
 
-The system will interact with a relational database to store:
+The system will store and retrieve data such as:
 
-Book records
+Movie information
 
-Member records
+Show schedules
 
-Issue history
+Seat availability
+
+Customer bookings
 
 7. Constraints
 
-Internet connection required for web version.
+Internet connectivity required for online booking.
 
-Only registered members can borrow books.
+Seats cannot be double booked.
 
-A member can borrow a limited number of books.
+Payment must be completed before ticket confirmation.
