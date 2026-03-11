@@ -1,157 +1,153 @@
-Cab Booking System
+Exam Management System
 1. Introduction
 1.1 Purpose
 
-The purpose of the Cab Booking System is to allow users to book cabs online for traveling from one location to another. The system connects passengers with available drivers and manages bookings, payments, and ride history.
+The purpose of the Exam Management System is to automate the process of managing examinations in educational institutions. The system allows administrators to create exams, teachers to manage question papers, and students to appear for exams and view results.
 
 1.2 Scope
 
-The system will enable users to register, book rides, track drivers, and make payments. Drivers can accept ride requests and manage their availability. Administrators manage users, drivers, and system operations.
+The system will allow administrators to manage users and exam schedules. Teachers can create question papers and evaluate results, while students can register for exams, take exams online, and view their results.
 
 1.3 Definitions
 
-Passenger – User who books the cab.
+Student – User who takes the exam.
 
-Driver – Person who accepts ride requests and provides transportation.
+Teacher – User who creates and manages exams.
 
-Ride Request – Request created by a passenger to book a cab.
+Administrator – Person responsible for managing the system.
 
-Trip – Completed journey from pickup to destination.
+Exam – Test conducted for evaluating student knowledge.
 
 2. Overall Description
 2.1 Product Perspective
 
-The Cab Booking System will be a web/mobile-based application connected to a backend server and database to manage users, drivers, rides, and payments.
+The Exam Management System will be a web-based application connected to a database to manage students, exams, questions, and results.
 
 2.2 Product Functions
 
-Major system functions include:
+Major functions include:
 
 User registration and login
 
-Cab booking
+Exam creation and scheduling
 
-Driver allocation
+Question paper management
 
-Ride tracking
+Online exam conduction
 
-Payment processing
-
-Ride history management
+Automatic result generation
 
 2.3 User Classes
 User Type	Description
-Passenger	Books cabs and makes payments
-Driver	Accepts ride requests and completes trips
-Admin	Manages drivers, users, and ride data
+Student	Takes exams and views results
+Teacher	Creates exams and manages questions
+Administrator	Manages users and exam schedules
 2.4 Operating Environment
 
-Mobile app / Web browser
+Web browser (Chrome, Firefox, Edge)
 
-Backend server (Node.js / Java / Python)
+Backend server (Java / Python / Node)
 
 Database (MySQL / PostgreSQL)
 
 3. Functional Requirements
 FR1: User Registration
 
-The system shall allow passengers to register using name, phone number, and password.
+The system shall allow students and teachers to register in the system.
 
 FR2: User Login
 
-The system shall allow registered users to log in securely.
+The system shall allow registered users to log in using their credentials.
 
-FR3: Cab Booking
+FR3: Exam Creation
 
-Passengers shall be able to book a cab by entering pickup and destination locations.
+Teachers shall be able to create exams and upload questions.
 
-FR4: Driver Assignment
+FR4: Exam Scheduling
 
-The system shall assign the nearest available driver to the passenger.
+The administrator shall schedule exams with date and time.
 
-FR5: Ride Tracking
+FR5: Take Exam
 
-Passengers shall be able to track the driver’s location during the ride.
+Students shall be able to take exams online within the scheduled time.
 
-FR6: Ride Completion
+FR6: Automatic Evaluation
 
-Drivers shall mark the ride as completed after reaching the destination.
+The system shall automatically evaluate objective-type questions.
 
-FR7: Payment Processing
+FR7: Result Generation
 
-Passengers shall be able to pay through online payment methods or cash.
+The system shall generate results after exam completion.
 
-FR8: Ride History
+FR8: Result Viewing
 
-Passengers shall be able to view their previous ride details.
-
-FR9: Driver Availability
-
-Drivers shall be able to update their availability status (online/offline).
+Students shall be able to view their exam results.
 
 4. Non-Functional Requirements
 NFR1: Performance
 
-The system should process booking requests within a few seconds.
+The system should handle multiple students taking exams simultaneously.
 
 NFR2: Security
 
-User data and payment information must be securely stored.
+User authentication and data protection must be ensured.
 
 NFR3: Usability
 
-The system interface should be simple and easy to use.
+The interface should be simple and easy for students and teachers to use.
 
 NFR4: Reliability
 
-The system should provide accurate driver allocation and ride tracking.
+The system should ensure that exam data and results are accurately stored.
 
-NFR5: Scalability
+NFR5: Availability
 
-The system should support a large number of users and ride requests.
+The system should be available during exam schedules without downtime.
 
 5. System Features
 5.1 User Management
 
-Register and manage passengers and drivers.
+Register students and teachers
 
-5.2 Booking System
+Manage user accounts
 
-Request rides.
+5.2 Exam Management
 
-Assign drivers automatically.
+Create exams
 
-5.3 Ride Management
+Schedule exams
 
-Track rides.
+Manage questions
 
-Record trip details.
+5.3 Result Management
 
-5.4 Payment System
+Evaluate exams
 
-Handle fare calculation and payments.
+Generate results
+
+Display student scores
 
 6. External Interface Requirements
 6.1 User Interface
 
-Mobile or web interface for passengers and drivers.
+A web-based interface for students, teachers, and administrators.
 
 6.2 Database Interface
 
-Stores data such as:
+The system will store data such as:
 
-User accounts
+Student records
 
-Driver information
+Exam details
 
-Ride details
+Question banks
 
-Payment records
+Results
 
 7. Constraints
 
-GPS required for location tracking.
+Internet connection required for online exams.
 
-Internet connection required for booking.
+Exams must be taken within scheduled time.
 
-Drivers must be verified before joining the system.
+Only registered students can access exams.
