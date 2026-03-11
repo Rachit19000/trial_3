@@ -2,17 +2,17 @@
 
 ## 1. System Overview
 
-**Project Name:** Movie Hall Management System
+**Project Name:** Cab Booking System
 
-**Description:** A web-based application for managing movie schedules, seat bookings, ticket generation, and customer management.
+**Description:** A web/mobile-based application for passengers to book cabs, track drivers, and manage payments. Drivers can accept ride requests and manage their availability. Administrators manage users, drivers, and system operations.
 
 **Architecture Pattern:** Microservices
 
 ### Key Design Decisions
 
 - Use microservices architecture for scalability and maintainability
-- Implement RESTful APIs for communication between services
-- Use a database to store application data
+- Implement real-time location tracking using websockets
+- Use OAuth2 for secure user authentication
 
 ## 2. Data Model
 
@@ -21,58 +21,36 @@
 | Field | Type | Description |
 |-------|------|-------------|
 | id | UUID | Unique identifier for the user |
-| name | String | Name of the user |
+| name | String | Full name of the user |
 | email | String | Email address of the user |
+| phone_number | String | Phone number of the user |
 | password | String | Password of the user |
-| role | String | Role of the user (e.g., Administrator, Customer) |
+| role | String | Role of the user (Passenger, Driver, Admin) |
 
-**Relationships:** Movie, Booking
+**Relationships:** Driver, Passenger, Admin
 
-### Entity: Movie
-
-| Field | Type | Description |
-|-------|------|-------------|
-| id | UUID | Unique identifier for the movie |
-| title | String | Title of the movie |
-| description | String | Description of the movie |
-| duration | Integer | Duration of the movie in minutes |
-| poster_url | String | URL of the movie poster |
-
-**Relationships:** Show, Booking
-
-### Entity: Show
+### Entity: Driver
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the show |
-| movie_id | UUID | Unique identifier for the movie |
-| hall_id | UUID | Unique identifier for the hall |
-| start_time | DateTime | Start time of the show |
+| id | UUID | Unique identifier for the driver |
+| user_id | UUID | Foreign key to the User entity |
+| availability_status | String | Availability status of the driver (Online, Offline) |
 
-**Relationships:** Seat, Booking
+**Relationships:** User
 
-### Entity: Seat
-
-| Field | Type | Description |
-|-------|------|-------------|
-| id | UUID | Unique identifier for the seat |
-| row | Integer | Row number of the seat |
-| column | Integer | Column number of the seat |
-| is_booked | Boolean | Indicates if the seat is booked |
-
-**Relationships:** Show
-
-### Entity: Booking
+### Entity: Ride
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the booking |
-| user_id | UUID | Unique identifier for the user |
-| show_id | UUID | Unique identifier for the show |
-| seat_ids | List<UUID> | List of seat IDs for the booking |
-| status | String | Status of the booking (e.g., Pending, Paid, Cancelled) |
+| id | UUID | Unique identifier for the ride |
+| pickup_location | String | Pickup location of the ride |
+| destination_location | String | Destination location of the ride |
+| status | String | Status of the ride (Pending, In Progress, Completed) |
+| created_at | Timestamp | Timestamp when the ride was created |
+| updated_at | Timestamp | Timestamp when the ride was last updated |
 
-**Relationships:** User, Show
+**Relationships:** Passenger, Driver
 
 ## 3. API Design
 
@@ -80,132 +58,88 @@
 |--------|------|-------------|
 | POST | `/users/register` | Register a new user |
 | POST | `/users/login` | Log in a user |
-| POST | `/movies` | Add a new movie |
-| PUT | `/movies/{id}` | Update movie details |
-| DELETE | `/movies/{id}` | Remove a movie from the system |
-| POST | `/shows` | Schedule a new show |
-| GET | `/movies` | Get a list of movies |
-| GET | `/movies/{id}` | Get movie details |
-| GET | `/shows/{id}` | Get show details |
-| GET | `/seats/{show_id}` | Get available seats for a show |
-| POST | `/bookings` | Book seats for a show |
-| GET | `/bookings/{id}` | Get booking details |
+| POST | `/rides/book` | Book a cab |
+| GET | `/rides/{ride_id}` | Get ride details |
+| PUT | `/rides/{ride_id}/mark-as-completed` | Mark ride as completed |
+| GET | `/drivers/availability` | Get driver availability |
+| PUT | `/drivers/availability` | Update driver availability |
+| GET | `/users/history` | Get user ride history |
 
 ### POST `/users/register`
 
 Register a new user
 
-**Request Body:** User registration details
+**Request Body:** name, phone_number, password
 
-**Response Body:** User ID and confirmation message
+**Response Body:** id, name, email, phone_number, role
 
 ### POST `/users/login`
 
 Log in a user
 
-**Request Body:** User login credentials
+**Request Body:** email, password
 
-**Response Body:** Session token and login confirmation
+**Response Body:** access_token, user_id, role
 
-### POST `/movies`
+### POST `/rides/book`
 
-Add a new movie
+Book a cab
 
-**Request Body:** Movie details
+**Request Body:** pickup_location, destination_location
 
-**Response Body:** Movie ID and confirmation message
+**Response Body:** id, pickup_location, destination_location, status
 
-### PUT `/movies/{id}`
+### GET `/rides/{ride_id}`
 
-Update movie details
+Get ride details
 
-**Request Body:** Updated movie details
+**Response Body:** id, pickup_location, destination_location, status, created_at, updated_at
 
-**Response Body:** Confirmation message
+### PUT `/rides/{ride_id}/mark-as-completed`
 
-### DELETE `/movies/{id}`
+Mark ride as completed
 
-Remove a movie from the system
+**Response Body:** id, status
 
-**Response Body:** Confirmation message
+### GET `/drivers/availability`
 
-### POST `/shows`
+Get driver availability
 
-Schedule a new show
+**Response Body:** id, availability_status
 
-**Request Body:** Show details
+### PUT `/drivers/availability`
 
-**Response Body:** Show ID and confirmation message
+Update driver availability
 
-### GET `/movies`
+**Request Body:** availability_status
 
-Get a list of movies
+**Response Body:** id, availability_status
 
-**Response Body:** List of movies
+### GET `/users/history`
 
-### GET `/movies/{id}`
+Get user ride history
 
-Get movie details
-
-**Response Body:** Movie details
-
-### GET `/shows/{id}`
-
-Get show details
-
-**Response Body:** Show details
-
-### GET `/seats/{show_id}`
-
-Get available seats for a show
-
-**Response Body:** List of available seats
-
-### POST `/bookings`
-
-Book seats for a show
-
-**Request Body:** List of seat IDs
-
-**Response Body:** Booking ID and confirmation message
-
-### GET `/bookings/{id}`
-
-Get booking details
-
-**Response Body:** Booking details
+**Response Body:** id, pickup_location, destination_location, status, created_at, updated_at
 
 ## 4. Component Breakdown
 
-### User Management Service
+### UserService
 
 **Responsibility:** Handles user registration, login, and management
 
-**Depends on:** Authentication Service, Database
+**Depends on:** UserService
 
-### Movie Management Service
+### RideService
 
-**Responsibility:** Handles movie addition, update, and removal
+**Responsibility:** Handles ride booking, tracking, and completion
 
-**Depends on:** Database
+**Depends on:** UserService, RideService
 
-### Show Management Service
+### DriverService
 
-**Responsibility:** Handles show scheduling and management
+**Responsibility:** Handles driver assignment, availability, and management
 
-**Depends on:** Database
-
-### Booking Service
-
-**Responsibility:** Handles seat selection, booking, and ticket generation
-
-**Depends on:** Database
-
-### Payment Gateway Service
-
-**Responsibility:** Handles payment processing
-
-**Depends on:** Database
+**Depends on:** UserService, DriverService
 
 ## 5. Tech Stack
 
@@ -220,11 +154,10 @@ Get booking details
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Database performance issues | High | Implement indexing and caching strategies |
-| Security vulnerabilities | High | Regular security audits and use of secure coding practices |
-| Scalability issues | High | Use microservices architecture and auto-scaling |
+| High traffic during peak hours | System performance degradation | Implement load balancing and caching strategies |
+| Data breaches | Loss of user trust and data | Implement strong encryption and regular security audits |
 
 ## 7. Open Questions
 
-- What is the exact payment gateway to be used?
-- What are the specific requirements for the UI design?
+- What are the specific payment methods to be supported?
+- How will user verification be handled for drivers?
