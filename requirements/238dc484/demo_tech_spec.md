@@ -2,120 +2,181 @@
 
 ## 1. System Overview
 
-**Project Name:** SDLC Artifact Automation Platform
+**Project Name:** Library Management System
 
-**Description:** A platform to automate the creation of structured SDLC artifacts from raw requirements, including requirements, user stories, and technical specifications, with human validation and integration into Jira workflows.
+**Description:** A web-based application designed to automate the management of library activities such as managing books, issuing and returning books, and maintaining member records.
 
 **Architecture Pattern:** Microservices
 
 ### Key Design Decisions
 
-- Use a microservices architecture to ensure scalability and maintainability.
-- Implement human validation checkpoints to ensure quality.
-- Integrate with GitHub for version control and storage.
+- Use microservices for scalability and maintainability
+- Implement RESTful APIs for easy integration
+- Use a relational database for data persistence
 
 ## 2. Data Model
 
-### Entity: Requirement
+### Entity: Member
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the requirement. |
-| content | TEXT | The raw content of the requirement. |
-| repo_name | VARCHAR(255) | Name of the repository where the requirement is stored. |
+| id | UUID | Unique identifier for the member |
+| username | String | Username for the member |
+| password | String | Password for the member |
+| name | String | Full name of the member |
+| email | String | Email address of the member |
+| borrowed_books | List<Book> | List of books currently borrowed by the member |
 
-**Relationships:** UserStory, TechSpec
+**Relationships:** borrowed_books
 
-### Entity: UserStory
-
-| Field | Type | Description |
-|-------|------|-------------|
-| id | UUID | Unique identifier for the user story. |
-| content | TEXT | The content of the user story. |
-| requirement_id | UUID | Foreign key to the Requirement entity. |
-
-**Relationships:** TechSpec
-
-### Entity: TechSpec
+### Entity: Book
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the technical specification. |
-| content | TEXT | The content of the technical specification. |
-| user_story_id | UUID | Foreign key to the UserStory entity. |
+| id | UUID | Unique identifier for the book |
+| title | String | Title of the book |
+| author | String | Author of the book |
+| isbn | String | ISBN of the book |
+| category | String | Category of the book |
+| available | Boolean | Indicates if the book is available for borrowing |
+| issued_to | Member | Member who currently has the book issued |
+
+**Relationships:** issued_to
 
 ## 3. API Design
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/auth/github` | Authenticate with GitHub. |
-| POST | `/api/github/repos` | Fetch user's GitHub repositories. |
-| POST | `/api/requirements/upload` | Upload requirements to a specific repository. |
+| POST | `/api/member/register` | Register a new member |
+| POST | `/api/member/login` | Login a registered member |
+| POST | `/api/book/add` | Add a new book |
+| PUT | `/api/book/update/{id}` | Update book details |
+| DELETE | `/api/book/delete/{id}` | Delete a book |
+| GET | `/api/book/available` | Get a list of available books |
+| POST | `/api/book/issue/{member_id}` | Issue a book to a member |
+| POST | `/api/book/return/{member_id}` | Return a book from a member |
+| GET | `/api/member/borrowed/{member_id}` | Get a list of books currently borrowed by a member |
 
-### GET `/auth/github`
+### POST `/api/member/register`
 
-Authenticate with GitHub.
+Register a new member
 
-**Response Body:** GitHub authentication URL.
+**Request Body:** username, password, name, email
 
-### POST `/api/github/repos`
+**Response Body:** id, username, name, email
 
-Fetch user's GitHub repositories.
+### POST `/api/member/login`
 
-**Request Body:** Authorization: Bearer SESSION_TOKEN
+Login a registered member
 
-**Response Body:** List of repositories.
+**Request Body:** username, password
 
-### POST `/api/requirements/upload`
+**Response Body:** id, username, name, email
 
-Upload requirements to a specific repository.
+### POST `/api/book/add`
 
-**Request Body:** repo: 'string', requirements: 'string'
+Add a new book
 
-**Response Body:** Confirmation message.
+**Request Body:** title, author, isbn, category
+
+**Response Body:** id, title, author, isbn, category
+
+### PUT `/api/book/update/{id}`
+
+Update book details
+
+**Request Body:** title, author, isbn, category
+
+**Response Body:** id, title, author, isbn, category
+
+### DELETE `/api/book/delete/{id}`
+
+Delete a book
+
+**Response Body:** id
+
+### GET `/api/book/available`
+
+Get a list of available books
+
+**Response Body:** [{id, title, author, isbn, category, available}]
+
+### POST `/api/book/issue/{member_id}`
+
+Issue a book to a member
+
+**Request Body:** book_id
+
+**Response Body:** id, title, author, isbn, category, issued_to
+
+### POST `/api/book/return/{member_id}`
+
+Return a book from a member
+
+**Request Body:** book_id
+
+**Response Body:** id, title, author, isbn, category, issued_to
+
+### GET `/api/member/borrowed/{member_id}`
+
+Get a list of books currently borrowed by a member
+
+**Response Body:** [{id, title, author, isbn, category, issued_to}]
 
 ## 4. Component Breakdown
 
-### Frontend
+### MemberService
 
-**Responsibility:** Provides a React web interface for file uploads, review, and approvals.
+**Responsibility:** Handles member registration, login, and profile management
 
-### Backend
+**Depends on:** UserService
 
-**Responsibility:** Orchestrates the processing of raw requirements and integrates with GitHub.
+### BookService
 
-**Depends on:** Frontend
+**Responsibility:** Handles book management, including adding, updating, and deleting books
 
-### AI Agents
+**Depends on:** BookRepository
 
-**Responsibility:** Converts raw requirements into structured SDLC artifacts.
+### BookRepository
 
-**Depends on:** Backend
+**Responsibility:** Manages book data persistence and retrieval
 
-### GitHub Integration
+**Depends on:** Database
 
-**Responsibility:** Handles version control and storage of artifacts.
+### UserService
 
-**Depends on:** Backend
+**Responsibility:** Manages user authentication and authorization
+
+**Depends on:** UserRepository
+
+### UserRepository
+
+**Responsibility:** Manages user data persistence and retrieval
+
+**Depends on:** Database
+
+### Database
+
+**Responsibility:** Manages data storage and retrieval for the application
 
 ## 5. Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | Frontend | React |
-| Backend | Java/Spring Boot |
+| Backend | Node.js |
 | Database | PostgreSQL |
-| Infrastructure | Docker, Kubernetes |
+| Infrastructure | AWS |
 
 ## 6. Risks & Mitigations
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Security vulnerabilities in OAuth flow | Potential unauthorized access to user data | Implement strict CSRF protection and validate state tokens. |
-| Inconsistent data between microservices | Data discrepancies and potential data loss | Implement a centralized event bus for change propagation. |
+| Data loss due to database failure | High | Implement regular backups and use a robust database management system |
+| Security vulnerabilities in the application | High | Conduct regular security audits and use secure coding practices |
 
 ## 7. Open Questions
 
-- What are the specific requirements for the AI agents?
-- How will the human validation checkpoints be implemented?
-- What are the detailed steps for integrating with Jira?
+- What is the exact format for the password field?
+- How should the system handle concurrent book issuance and return requests?
+- What is the maximum number of books a member can borrow?
