@@ -12,7 +12,7 @@
 
 - Use microservices architecture for scalability and maintainability
 - Implement RESTful APIs for communication between services
-- Use a database for persistent storage of data
+- Use a database to store movie, booking, and seat information
 
 ## 2. Data Model
 
@@ -24,7 +24,7 @@
 | name | String | Name of the user |
 | email | String | Email address of the user |
 | password | String | Password of the user (hashed) |
-| role | String | Role of the user (e.g., admin, customer) |
+| role | String | Role of the user (Admin/Customer) |
 
 **Relationships:** Movie, Booking
 
@@ -36,7 +36,6 @@
 | title | String | Title of the movie |
 | description | String | Description of the movie |
 | duration | Integer | Duration of the movie in minutes |
-| poster_url | String | URL of the movie poster |
 
 **Relationships:** Show, Booking
 
@@ -48,7 +47,6 @@
 | movie_id | UUID | Foreign key to the movie entity |
 | hall_id | UUID | Foreign key to the hall entity |
 | start_time | DateTime | Start time of the show |
-| end_time | DateTime | End time of the show |
 
 **Relationships:** Seat, Booking
 
@@ -59,10 +57,9 @@
 | id | UUID | Unique identifier for the seat |
 | row | Integer | Row number of the seat |
 | column | Integer | Column number of the seat |
-| hall_id | UUID | Foreign key to the hall entity |
 | is_booked | Boolean | Indicates if the seat is booked |
 
-**Relationships:** Booking
+**Relationships:** Show
 
 ### Entity: Booking
 
@@ -71,11 +68,10 @@
 | id | UUID | Unique identifier for the booking |
 | user_id | UUID | Foreign key to the user entity |
 | show_id | UUID | Foreign key to the show entity |
-| seat_ids | Array<UUID> | Array of seat IDs for the booking |
-| total_amount | Float | Total amount for the booking |
-| status | String | Status of the booking (e.g., pending, confirmed, cancelled) |
+| total_amount | Decimal | Total amount for the booking |
+| status | String | Status of the booking (Pending/Paid) |
 
-**Relationships:** User, Show
+**Relationships:** Seat
 
 ## 3. API Design
 
@@ -83,14 +79,14 @@
 |--------|------|-------------|
 | POST | `/users/register` | Register a new user |
 | POST | `/users/login` | Login a registered user |
-| GET | `/movies` | Get a list of movies |
+| GET | `/movies` | Get a list of all movies |
 | GET | `/movies/{id}` | Get details of a specific movie |
-| GET | `/shows` | Get a list of shows |
+| GET | `/shows` | Get a list of all shows |
 | GET | `/shows/{id}` | Get details of a specific show |
-| GET | `/seats/{hall_id}` | Get available seats for a specific hall |
+| GET | `/seats/{show_id}` | Get available seats for a specific show |
 | POST | `/bookings` | Book seats for a specific show |
 | GET | `/bookings/{id}` | Get details of a specific booking |
-| GET | `/bookings/history` | Get booking history for a user |
+| GET | `/bookings/history` | Get booking history for a specific user |
 
 ### POST `/users/register`
 
@@ -110,7 +106,7 @@ Login a registered user
 
 ### GET `/movies`
 
-Get a list of movies
+Get a list of all movies
 
 **Response Body:** List of movies
 
@@ -122,7 +118,7 @@ Get details of a specific movie
 
 ### GET `/shows`
 
-Get a list of shows
+Get a list of all shows
 
 **Response Body:** List of shows
 
@@ -132,9 +128,9 @@ Get details of a specific show
 
 **Response Body:** Show details
 
-### GET `/seats/{hall_id}`
+### GET `/seats/{show_id}`
 
-Get available seats for a specific hall
+Get available seats for a specific show
 
 **Response Body:** List of available seats
 
@@ -154,53 +150,65 @@ Get details of a specific booking
 
 ### GET `/bookings/history`
 
-Get booking history for a user
+Get booking history for a specific user
 
-**Response Body:** List of booking history
+**Response Body:** List of bookings
 
 ## 4. Component Breakdown
 
-### UserService
+### User Management Service
 
-**Responsibility:** Handles user registration and login
+**Responsibility:** Handles user registration, login, and management
 
-**Depends on:** UserService
+**Depends on:** Authentication Service
 
-### MovieService
+### Movie Management Service
 
-**Responsibility:** Manages movie details and show scheduling
+**Responsibility:** Handles movie addition, update, and removal
 
-**Depends on:** UserService, ShowService
+**Depends on:** Database Service
 
-### ShowService
+### Show Management Service
 
-**Responsibility:** Manages show schedules and seat availability
+**Responsibility:** Handles show scheduling and assignment to halls
 
-**Depends on:** SeatService
+**Depends on:** Database Service
 
-### SeatService
+### Seat Management Service
 
-**Responsibility:** Manages seat availability and booking
+**Responsibility:** Handles seat availability and booking
 
-**Depends on:** BookingService
+**Depends on:** Database Service
 
-### BookingService
+### Booking Management Service
 
-**Responsibility:** Manages booking details and payment processing
+**Responsibility:** Handles booking creation and payment processing
 
-**Depends on:** PaymentService
+**Depends on:** Payment Gateway Service, Database Service
 
-### PaymentService
+### Database Service
 
-**Responsibility:** Handles payment processing for bookings
+**Responsibility:** Manages data storage and retrieval
 
-**Depends on:** UserService
+**Depends on:** Database
+
+### Authentication Service
+
+**Responsibility:** Handles user authentication
+
+**Depends on:** Database Service
+
+### Payment Gateway Service
+
+**Responsibility:** Handles payment processing
+
+**Depends on:** Database Service
 
 ## 5. Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | React |
+| Frontend | React.js |
 | Backend | Node.js |
 | Database | PostgreSQL |
 | Infrastructure | AWS |
@@ -209,9 +217,9 @@ Get booking history for a user
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Database performance issues | Slow response times | Optimize database queries and indexes, use caching |
-| Security vulnerabilities | Data breaches | Implement secure authentication, use HTTPS, regular security audits |
-| Scalability issues | System crashes under high load | Use load balancers, auto-scaling, and microservices architecture |
+| Database performance issues | High | Implement indexing and caching strategies |
+| Security vulnerabilities | High | Regular security audits and use of secure coding practices |
+| Scalability issues | High | Use microservices architecture and auto-scaling |
 
 ## 7. Open Questions
 
