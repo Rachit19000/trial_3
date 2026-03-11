@@ -10,9 +10,9 @@
 
 ### Key Design Decisions
 
-- Use microservices for scalability and maintainability
-- Implement RESTful APIs for communication between services
-- Use a database for persistent storage
+- Use microservices architecture for scalability and maintainability
+- Implement RESTful APIs for service communication
+- Use a database for persistent storage of data
 
 ## 2. Data Model
 
@@ -36,7 +36,6 @@
 | title | String | Title of the movie |
 | description | String | Description of the movie |
 | duration | Integer | Duration of the movie in minutes |
-| poster_url | String | URL of the movie poster |
 
 **Relationships:** Show, Booking
 
@@ -45,102 +44,109 @@
 | Field | Type | Description |
 |-------|------|-------------|
 | id | UUID | Unique identifier for the show |
-| movie_id | UUID | Foreign key to the Movie entity |
-| hall_id | UUID | Foreign key to the Hall entity |
-| start_time | Timestamp | Start time of the show |
-| end_time | Timestamp | End time of the show |
+| movie_id | UUID | Foreign key to the movie entity |
+| hall_id | UUID | Foreign key to the hall entity |
+| start_time | DateTime | Start time of the show |
 
-**Relationships:** Hall, Booking
-
-### Entity: Hall
-
-| Field | Type | Description |
-|-------|------|-------------|
-| id | UUID | Unique identifier for the hall |
-| name | String | Name of the hall |
-| seats | Integer | Total number of seats in the hall |
-
-**Relationships:** Show, Seat
+**Relationships:** Seat, Booking
 
 ### Entity: Seat
 
 | Field | Type | Description |
 |-------|------|-------------|
 | id | UUID | Unique identifier for the seat |
-| hall_id | UUID | Foreign key to the Hall entity |
 | row | Integer | Row number of the seat |
 | column | Integer | Column number of the seat |
 | is_booked | Boolean | Indicates if the seat is booked |
 
-**Relationships:** Booking
+**Relationships:** Show
 
 ### Entity: Booking
 
 | Field | Type | Description |
 |-------|------|-------------|
 | id | UUID | Unique identifier for the booking |
-| user_id | UUID | Foreign key to the User entity |
-| show_id | UUID | Foreign key to the Show entity |
-| seat_ids | Array<UUID> | Array of seat IDs booked for the show |
+| user_id | UUID | Foreign key to the user entity |
+| show_id | UUID | Foreign key to the show entity |
+| seat_ids | Array<UUID> | Array of seat IDs for the booking |
 | total_amount | Decimal | Total amount for the booking |
 | status | String | Status of the booking (Pending/Paid) |
 
-**Relationships:** User, Show, Seat
+**Relationships:** User, Show
 
 ## 3. API Design
 
 | Method | Path | Description |
 |--------|------|-------------|
 | POST | `/users/register` | Register a new user |
-| POST | `/users/login` | User login |
-| GET | `/movies` | Get list of movies |
-| GET | `/movies/{movie_id}` | Get movie details |
-| GET | `/shows` | Get list of shows |
-| GET | `/shows/{show_id}` | Get show details |
+| POST | `/users/login` | Login a registered user |
+| POST | `/movies` | Add a new movie |
+| PUT | `/movies/{id}` | Update movie details |
+| DELETE | `/movies/{id}` | Remove a movie |
+| POST | `/shows` | Schedule a new show |
+| GET | `/movies` | Get a list of movies |
+| GET | `/shows/{id}` | Get show details |
 | GET | `/seats/{show_id}` | Get available seats for a show |
 | POST | `/bookings` | Book seats for a show |
-| GET | `/bookings/{booking_id}` | Get booking details |
-| GET | `/bookings/history` | Get booking history |
+| GET | `/bookings/{id}` | Get booking details |
 
 ### POST `/users/register`
 
 Register a new user
 
-**Request Body:** User registration details
+**Request Body:** User details including name, email, and password
 
-**Response Body:** User registration confirmation
+**Response Body:** Confirmation message and user ID
 
 ### POST `/users/login`
 
-User login
+Login a registered user
 
-**Request Body:** User login credentials
+**Request Body:** User credentials including email and password
 
-**Response Body:** User login confirmation
+**Response Body:** Login confirmation and session token
+
+### POST `/movies`
+
+Add a new movie
+
+**Request Body:** Movie details including title, description, and duration
+
+**Response Body:** Confirmation message and movie ID
+
+### PUT `/movies/{id}`
+
+Update movie details
+
+**Request Body:** Updated movie details
+
+**Response Body:** Confirmation message
+
+### DELETE `/movies/{id}`
+
+Remove a movie
+
+**Response Body:** Confirmation message
+
+### POST `/shows`
+
+Schedule a new show
+
+**Request Body:** Show details including movie ID, hall ID, and start time
+
+**Response Body:** Confirmation message and show ID
 
 ### GET `/movies`
 
-Get list of movies
+Get a list of movies
 
 **Response Body:** List of movies
 
-### GET `/movies/{movie_id}`
-
-Get movie details
-
-**Response Body:** Movie details
-
-### GET `/shows`
-
-Get list of shows
-
-**Response Body:** List of shows
-
-### GET `/shows/{show_id}`
+### GET `/shows/{id}`
 
 Get show details
 
-**Response Body:** Show details
+**Response Body:** Show details including movie, hall, and start time
 
 ### GET `/seats/{show_id}`
 
@@ -152,47 +158,47 @@ Get available seats for a show
 
 Book seats for a show
 
-**Request Body:** Seat booking details
+**Request Body:** Selected seat IDs
 
-**Response Body:** Booking confirmation
+**Response Body:** Confirmation message and booking ID
 
-### GET `/bookings/{booking_id}`
+### GET `/bookings/{id}`
 
 Get booking details
 
-**Response Body:** Booking details
-
-### GET `/bookings/history`
-
-Get booking history
-
-**Response Body:** List of booking history
+**Response Body:** Booking details including user, show, and seat IDs
 
 ## 4. Component Breakdown
 
-### UserManagementService
+### UserService
 
-**Responsibility:** Handles user registration and login
+**Responsibility:** Handles user registration, login, and authentication
 
 **Depends on:** UserService
 
 ### MovieService
 
-**Responsibility:** Manages movie details and schedules
+**Responsibility:** Manages movie details and scheduling
 
-**Depends on:** UserService
+**Depends on:** UserService, ShowService
 
 ### ShowService
 
-**Responsibility:** Manages show schedules and seat availability
+**Responsibility:** Manages show scheduling and seat availability
 
-**Depends on:** MovieService, UserService
+**Depends on:** SeatService, MovieService
+
+### SeatService
+
+**Responsibility:** Manages seat booking and availability
+
+**Depends on:** ShowService
 
 ### BookingService
 
-**Responsibility:** Manages seat booking and ticket generation
+**Responsibility:** Manages booking creation and status updates
 
-**Depends on:** ShowService, UserService
+**Depends on:** UserService, ShowService, SeatService
 
 ## 5. Tech Stack
 
@@ -207,12 +213,11 @@ Get booking history
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Database performance issues | Slow response times | Optimize queries and use indexing |
-| Security vulnerabilities | Data breaches | Implement secure authentication and encryption |
-| Scalability issues | System crashes under high load | Use load balancers and auto-scaling |
+| Database performance issues | High | Implement indexing and caching strategies |
+| Security vulnerabilities | High | Regular security audits and use of secure coding practices |
+| Scalability issues | High | Use microservices architecture and auto-scaling |
 
 ## 7. Open Questions
 
 - What is the exact payment gateway to be used?
-- What is the expected load on the system?
-- What is the backup and recovery plan for the database?
+- What are the exact requirements for the digital ticket generation?
