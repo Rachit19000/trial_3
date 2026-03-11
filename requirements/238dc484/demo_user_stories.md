@@ -1,7 +1,7 @@
 # User Stories: Movie Hall Management System
 
-**Total User Stories:** 11
-**Estimated Effort:** 28 days
+**Total User Stories:** 10
+**Estimated Effort:** 20 days
 
 ## Sprint Week 1: User Authentication
 
@@ -9,9 +9,8 @@
 Allow customers to register using personal details such as name, email, and password.
 
 **Acceptance Criteria:**
-- User can provide name, email, and password
-- User receives confirmation upon successful registration
-- Duplicate emails are not allowed
+- Customers can register with valid personal details.
+- Registration process is secure and data is stored securely.
 
 **Linked FRs:** FR1
 
@@ -19,104 +18,87 @@ Allow customers to register using personal details such as name, email, and pass
 Allow registered users to log in securely.
 
 **Acceptance Criteria:**
-- User can provide login credentials
-- User receives confirmation upon successful login
-- Incorrect credentials result in failure
+- Users can log in with valid credentials.
+- Login process is secure.
 
 **Linked FRs:** FR2
 
-## Sprint Week 2: Movie Management
+## Sprint Week 2: Administrative Functions
 
-### US3: Movie Management - Add New Movie
-Administrator can add new movies to the system.
+### US3: Movie Management
+Allow administrators to add, update, and remove movies.
 
 **Acceptance Criteria:**
-- Administrator can provide movie details
-- Movie is added to the system
-- Movie details are stored in the database
+- Administrators can add new movies.
+- Administrators can update movie details.
+- Administrators can remove movies from the system.
 
 **Linked FRs:** FR3
 
-### US4: Movie Management - Update Movie Details
-Administrator can update movie details.
+### US4: Show Scheduling
+Allow administrators to schedule movie showtimes and assign them to specific halls.
 
 **Acceptance Criteria:**
-- Administrator can provide updated movie details
-- Movie details are updated in the system
-- Updated details are stored in the database
-
-**Linked FRs:** FR3
-
-## Sprint Week 3: Show Management
-
-### US5: Show Scheduling
-Administrator can schedule movie showtimes and assign them to specific halls.
-
-**Acceptance Criteria:**
-- Administrator can provide show scheduling details
-- Show is scheduled and assigned to a hall
-- Show details are stored in the database
+- Administrators can schedule new shows.
+- Shows are assigned to specific halls.
 
 **Linked FRs:** FR4
 
-### US6: View Movies
-Customers can view movie list and details.
+## Sprint Week 3: Customer Functions
+
+### US5: View Movies
+Allow customers to view movie listings, details, and available showtimes.
 
 **Acceptance Criteria:**
-- Customers can view movie list
-- Customers can view movie details
-- Customers can view available showtimes
+- Customers can view movie lists.
+- Customers can view movie details.
+- Customers can view available showtimes.
 
 **Linked FRs:** FR5
 
-## Sprint Week 4: Ticket Booking and History
-
-### US7: Seat Selection
-Customers can select available seats for a movie show.
+### US6: Seat Selection
+Allow customers to select available seats for a movie show.
 
 **Acceptance Criteria:**
-- Customers can view available seats
-- Customers can select seats
-- Selected seats are marked as booked
+- Customers can select available seats.
+- Selected seats are marked as booked.
 
 **Linked FRs:** FR6
 
-### US8: Ticket Booking
-Customers can book tickets for selected seats.
+## Sprint Week 4: Final Features
+
+### US7: Ticket Booking
+Allow customers to book tickets for selected seats.
 
 **Acceptance Criteria:**
-- Customers can book tickets
-- Booked seats are marked as booked
-- Booking confirmation is provided
+- Customers can book tickets for selected seats.
+- Bookings are processed and confirmed.
 
 **Linked FRs:** FR7
 
-### US9: Payment Processing
-Customers can make payments for booked tickets.
+### US8: Payment Processing
+Allow customers to make payments for booked tickets.
 
 **Acceptance Criteria:**
-- Customers can provide payment details
-- Payment is processed
-- Payment confirmation is provided
+- Customers can make secure payments.
+- Payments are processed and confirmed.
 
 **Linked FRs:** FR8
 
-### US10: Ticket Generation
-System generates a digital ticket after successful booking.
+### US9: Ticket Generation
+Generate a digital ticket after successful booking.
 
 **Acceptance Criteria:**
-- System generates a digital ticket
-- Ticket is stored in the database
-- Ticket is provided to the customer
+- Digital tickets are generated after successful booking.
+- Tickets are delivered to customers.
 
 **Linked FRs:** FR9
 
-### US11: Booking History
-Customers can view their booking history.
+### US10: Booking History
+Allow customers to view their booking history.
 
 **Acceptance Criteria:**
-- Customers can view booking history
-- Booking history is accurate
-- Booking history is stored in the database
+- Customers can view their booking history.
+- History is accurate and up-to-date.
 
 **Linked FRs:** FR10
