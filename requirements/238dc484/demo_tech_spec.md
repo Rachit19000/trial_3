@@ -2,162 +2,199 @@
 
 ## 1. System Overview
 
-**Project Name:** Library Management System
+**Project Name:** Movie Hall Management System
 
-**Description:** A web-based application designed to automate the management of library activities such as managing books, issuing and returning books, and maintaining member records.
+**Description:** A web-based application for managing movie schedules, seat bookings, ticket generation, and customer management.
 
 **Architecture Pattern:** Microservices
 
 ### Key Design Decisions
 
 - Use microservices for scalability and maintainability
-- Implement RESTful APIs for easy integration
-- Use a relational database for data persistence
+- Implement RESTful APIs for service communication
+- Utilize a database for persistent storage
 
 ## 2. Data Model
 
-### Entity: Member
+### Entity: User
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the member |
-| username | String | Username for the member |
-| password | String | Password for the member |
-| name | String | Full name of the member |
-| email | String | Email address of the member |
-| borrowed_books | List<Book> | List of books currently borrowed by the member |
+| id | UUID | Unique identifier for the user |
+| name | String | Name of the user |
+| email | String | Email address of the user |
+| password | String | Password of the user (hashed) |
+| role | String | Role of the user (Customer or Administrator) |
 
-**Relationships:** borrowed_books
+**Relationships:** Movie, Booking
 
-### Entity: Book
+### Entity: Movie
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the book |
-| title | String | Title of the book |
-| author | String | Author of the book |
-| isbn | String | ISBN of the book |
-| category | String | Category of the book |
-| available | Boolean | Indicates if the book is available for borrowing |
-| issued_to | Member | Member who currently has the book issued |
+| id | UUID | Unique identifier for the movie |
+| title | String | Title of the movie |
+| description | String | Description of the movie |
+| duration | Integer | Duration of the movie in minutes |
 
-**Relationships:** issued_to
+**Relationships:** Show, Booking
+
+### Entity: Show
+
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Unique identifier for the show |
+| movie_id | UUID | Foreign key to the movie entity |
+| hall_id | UUID | Foreign key to the hall entity |
+| start_time | DateTime | Start time of the show |
+
+**Relationships:** Seat, Booking
+
+### Entity: Seat
+
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Unique identifier for the seat |
+| row | Integer | Row number of the seat |
+| column | Integer | Column number of the seat |
+| is_booked | Boolean | Indicates if the seat is booked |
+
+**Relationships:** Show
+
+### Entity: Booking
+
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Unique identifier for the booking |
+| user_id | UUID | Foreign key to the user entity |
+| show_id | UUID | Foreign key to the show entity |
+| total_amount | Decimal | Total amount for the booking |
+
+**Relationships:** Seat
 
 ## 3. API Design
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/api/member/register` | Register a new member |
-| POST | `/api/member/login` | Login a registered member |
-| POST | `/api/book/add` | Add a new book |
-| PUT | `/api/book/update/{id}` | Update book details |
-| DELETE | `/api/book/delete/{id}` | Delete a book |
-| GET | `/api/book/available` | Get a list of available books |
-| POST | `/api/book/issue/{member_id}` | Issue a book to a member |
-| POST | `/api/book/return/{member_id}` | Return a book from a member |
-| GET | `/api/member/borrowed/{member_id}` | Get a list of books currently borrowed by a member |
+| POST | `/users/register` | Register a new user |
+| POST | `/users/login` | Log in a user |
+| GET | `/movies` | Get a list of movies |
+| POST | `/movies` | Add a new movie |
+| PUT | `/movies/{id}` | Update a movie |
+| DELETE | `/movies/{id}` | Delete a movie |
+| POST | `/shows` | Schedule a new show |
+| GET | `/shows` | Get a list of shows |
+| GET | `/seats/{show_id}` | Get available seats for a show |
+| POST | `/bookings` | Book seats for a show |
+| GET | `/bookings/{id}` | Get booking details |
 
-### POST `/api/member/register`
+### POST `/users/register`
 
-Register a new member
+Register a new user
 
-**Request Body:** username, password, name, email
+**Request Body:** name, email, password
 
-**Response Body:** id, username, name, email
+**Response Body:** id, name, email, role
 
-### POST `/api/member/login`
+### POST `/users/login`
 
-Login a registered member
+Log in a user
 
-**Request Body:** username, password
+**Request Body:** email, password
 
-**Response Body:** id, username, name, email
+**Response Body:** token
 
-### POST `/api/book/add`
+### GET `/movies`
 
-Add a new book
+Get a list of movies
 
-**Request Body:** title, author, isbn, category
+**Response Body:** [{id, title, description, duration}]
 
-**Response Body:** id, title, author, isbn, category
+### POST `/movies`
 
-### PUT `/api/book/update/{id}`
+Add a new movie
 
-Update book details
+**Request Body:** title, description, duration
 
-**Request Body:** title, author, isbn, category
+**Response Body:** {id, title, description, duration}
 
-**Response Body:** id, title, author, isbn, category
+### PUT `/movies/{id}`
 
-### DELETE `/api/book/delete/{id}`
+Update a movie
 
-Delete a book
+**Request Body:** title, description, duration
 
-**Response Body:** id
+**Response Body:** {id, title, description, duration}
 
-### GET `/api/book/available`
+### DELETE `/movies/{id}`
 
-Get a list of available books
+Delete a movie
 
-**Response Body:** [{id, title, author, isbn, category, available}]
+### POST `/shows`
 
-### POST `/api/book/issue/{member_id}`
+Schedule a new show
 
-Issue a book to a member
+**Request Body:** movie_id, hall_id, start_time
 
-**Request Body:** book_id
+**Response Body:** {id, movie_id, hall_id, start_time}
 
-**Response Body:** id, title, author, isbn, category, issued_to
+### GET `/shows`
 
-### POST `/api/book/return/{member_id}`
+Get a list of shows
 
-Return a book from a member
+**Response Body:** [{id, movie_id, hall_id, start_time}]
 
-**Request Body:** book_id
+### GET `/seats/{show_id}`
 
-**Response Body:** id, title, author, isbn, category, issued_to
+Get available seats for a show
 
-### GET `/api/member/borrowed/{member_id}`
+**Response Body:** [{id, row, column, is_booked}]
 
-Get a list of books currently borrowed by a member
+### POST `/bookings`
 
-**Response Body:** [{id, title, author, isbn, category, issued_to}]
+Book seats for a show
+
+**Request Body:** show_id, seat_ids
+
+**Response Body:** {id, user_id, show_id, total_amount}
+
+### GET `/bookings/{id}`
+
+Get booking details
+
+**Response Body:** {id, user_id, show_id, total_amount, seats}
 
 ## 4. Component Breakdown
 
-### MemberService
+### UserService
 
-**Responsibility:** Handles member registration, login, and profile management
+**Responsibility:** Handles user registration, login, and authentication
 
 **Depends on:** UserService
 
-### BookService
+### MovieService
 
-**Responsibility:** Handles book management, including adding, updating, and deleting books
+**Responsibility:** Manages movie details and schedules
 
-**Depends on:** BookRepository
+**Depends on:** UserService
 
-### BookRepository
+### ShowService
 
-**Responsibility:** Manages book data persistence and retrieval
+**Responsibility:** Manages show schedules and seat availability
 
-**Depends on:** Database
+**Depends on:** MovieService, SeatService
 
-### UserService
+### SeatService
 
-**Responsibility:** Manages user authentication and authorization
+**Responsibility:** Manages seat availability and booking
 
-**Depends on:** UserRepository
+**Depends on:** ShowService
 
-### UserRepository
+### BookingService
 
-**Responsibility:** Manages user data persistence and retrieval
+**Responsibility:** Manages booking details and payment processing
 
-**Depends on:** Database
-
-### Database
-
-**Responsibility:** Manages data storage and retrieval for the application
+**Depends on:** UserService, ShowService
 
 ## 5. Tech Stack
 
@@ -172,11 +209,10 @@ Get a list of books currently borrowed by a member
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Data loss due to database failure | High | Implement regular backups and use a robust database management system |
-| Security vulnerabilities in the application | High | Conduct regular security audits and use secure coding practices |
+| High traffic during peak movie showtimes | System performance degradation | Implement load balancing and caching strategies |
+| Data breaches | Loss of user data and trust | Implement robust security measures, including encryption and regular security audits |
 
 ## 7. Open Questions
 
-- What is the exact format for the password field?
-- How should the system handle concurrent book issuance and return requests?
-- What is the maximum number of books a member can borrow?
+- What payment gateway will be used for secure transactions?
+- How will the system handle seat availability in real-time?
