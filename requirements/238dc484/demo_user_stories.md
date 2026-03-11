@@ -1,122 +1,112 @@
-# User Stories: Library Management System
+# User Stories: Movie Hall Management System
 
-**Total User Stories:** 11
-**Estimated Effort:** 32 days
+**Total User Stories:** 10
+**Estimated Effort:** 20 days
 
 ## Sprint Week 1: User Authentication
 
-### US001: User Registration
-The system shall allow new members to register in the library system.
+### US001: Customer Registration
+Customers can register using personal details such as name, email, and password.
 
 **Acceptance Criteria:**
-- New members can register with a unique username and password.
-- Registration process includes validation of required fields.
-- Registration success message is displayed.
+- Customers can provide name, email, and password.
+- System validates email format.
+- System stores user details securely.
 
 **Linked FRs:** FR1
 
-### US002: User Login
-The system shall allow registered users to log in using username and password.
+### US002: Customer Login
+Registered users can log in securely.
 
 **Acceptance Criteria:**
-- Users can log in with their registered username and password.
-- Login success message is displayed.
-- Invalid login attempts are handled gracefully.
+- Users can enter email and password.
+- System verifies user credentials.
+- System provides secure session management.
 
 **Linked FRs:** FR2
 
-## Sprint Week 2: Book Management
+## Sprint Week 2: Movie Management
 
-### US003: Book Management - Add New Books
-The librarian shall be able to add new books to the system.
+### US003: Movie Management - Add New Movie
+The administrator can add new movies to the system.
 
 **Acceptance Criteria:**
-- Librarian can add a new book with title, author, ISBN, and category.
-- Book details are stored in the database.
-- Confirmation message is displayed.
+- Administrator can enter movie details.
+- System stores movie details securely.
+- System displays movie list to customers.
 
 **Linked FRs:** FR3
 
-### US004: Book Management - Update Book Details
-The librarian shall be able to update book details.
+### US004: Movie Management - Update Movie Details
+The administrator can update movie details.
 
 **Acceptance Criteria:**
-- Librarian can update existing book details.
-- Updated book details are stored in the database.
-- Confirmation message is displayed.
+- Administrator can edit existing movie details.
+- System updates movie details securely.
+- System displays updated movie details to customers.
 
 **Linked FRs:** FR3
 
-## Sprint Week 3: Search Functionality
+## Sprint Week 3: Show and Seat Management
 
-### US005: Book Management - Delete Books
-The librarian shall be able to delete books from the system.
-
-**Acceptance Criteria:**
-- Librarian can delete a book.
-- Book details are removed from the database.
-- Confirmation message is displayed.
-
-**Linked FRs:** FR3
-
-### US006: Book Management - View Available Books
-The librarian shall be able to view available books.
+### US005: Show Scheduling
+The administrator can schedule movie showtimes and assign them to specific halls.
 
 **Acceptance Criteria:**
-- Librarian can view a list of available books.
-- Book availability status is displayed.
-- Confirmation message is displayed.
-
-**Linked FRs:** FR3
-
-### US007: Search Books
-The system shall allow users to search books by title, author, ISBN, and category.
-
-**Acceptance Criteria:**
-- Users can search for books using title, author, ISBN, or category.
-- Search results are displayed.
-- Confirmation message is displayed.
+- Administrator can select showtimes and halls.
+- System stores show schedules securely.
+- System displays show schedules to customers.
 
 **Linked FRs:** FR4
 
-## Sprint Week 4: Borrowing and Fine Management
-
-### US008: Issue Book
-The librarian shall be able to issue books to members.
+### US006: Seat Selection
+Customers can select available seats for a movie show.
 
 **Acceptance Criteria:**
-- Librarian can issue a book to a member.
-- Book is marked as issued in the database.
-- Confirmation message is displayed.
-
-**Linked FRs:** FR5
-
-### US009: Return Book
-The system shall allow members to return borrowed books.
-
-**Acceptance Criteria:**
-- Member can return a borrowed book.
-- Book is marked as returned in the database.
-- Confirmation message is displayed.
+- System displays available seats.
+- Customers can select seats.
+- System updates seat availability.
 
 **Linked FRs:** FR6
 
-### US010: Fine Calculation
-The system shall automatically calculate fines if the book is returned after the due date.
+## Sprint Week 4: Ticket Booking and History
+
+### US007: Ticket Booking
+Customers can book tickets for selected seats.
 
 **Acceptance Criteria:**
-- Fines are calculated based on the number of days the book is overdue.
-- Fines are stored in the database.
-- Confirmation message is displayed.
+- Customers can select seats and book tickets.
+- System stores booking information securely.
+- System generates booking confirmation.
 
 **Linked FRs:** FR7
 
-### US011: View Borrowed Books
-Members shall be able to view books currently borrowed.
+### US008: Payment Processing
+Customers can make payments for booked tickets.
 
 **Acceptance Criteria:**
-- Member can view a list of books currently borrowed.
-- Borrowed books are displayed.
-- Confirmation message is displayed.
+- Customers can enter payment details.
+- System processes payment securely.
+- System confirms ticket booking.
 
 **Linked FRs:** FR8
+
+### US009: Ticket Generation
+The system generates a digital ticket after successful booking.
+
+**Acceptance Criteria:**
+- System generates digital ticket.
+- Ticket includes booking details.
+- Ticket is sent to customer.
+
+**Linked FRs:** FR9
+
+### US010: Booking History
+Customers can view their booking history.
+
+**Acceptance Criteria:**
+- System displays booking history.
+- History includes booking details.
+- History is accessible to customers.
+
+**Linked FRs:** FR10
