@@ -1,64 +1,174 @@
-# Requirements: SDLC Artifact Automation Platform
+Library Management System
+1. Introduction
+1.1 Purpose
 
-## Functional Requirements
+The purpose of the Library Management System (LMS) is to automate the management of library activities such as managing books, issuing and returning books, and maintaining member records. The system aims to reduce manual work and improve efficiency.
 
-### FR1: Convert raw requirements into structured SDLC artifacts
-AI-driven platform to automate the conversion of raw requirements (PDF/DOCX/Text) into structured SDLC artifacts.
+1.2 Scope
 
-### FR2: Implement human validation checkpoints
-Ensure all generated artifacts are human validated before being integrated into workflows.
+The Library Management System will allow librarians to manage books and members efficiently. Users (students or members) can search for books, borrow books, and return them. The system will maintain records of issued books, fines, and available inventory.
 
-### FR3: Integrate with Jira API
-Automatically integrate generated artifacts into Jira workflows.
+1.3 Definitions
 
-### FR4: Use specialized AI agents for different artifact types
-Deploy AI agents tailored to generate specific types of SDLC artifacts.
+Member – A registered user who can borrow books.
 
-### FR5: Integrate GitHub for version-controlled artifact storage
-Store all generated artifacts in a version-controlled manner using GitHub.
+Librarian – Administrator who manages books and users.
 
-### FR6: Ensure quality via validation, retry logic, and structured outputs
-Implement validation, retry logic, and structured outputs to ensure high-quality artifacts.
+Book Issue – Process of lending a book to a member.
 
-## Non-Functional Requirements
+Book Return – Process of returning the borrowed book.
 
-- **NFR1**: Frontend should provide a React web interface for uploads, review, and approvals.
-- **NFR2**: Backend should use Java/Spring Boot API for orchestration and processing.
-- **NFR3**: AI agents should be developed using Python and LangGraph + HuggingFace models.
-- **NFR4**: Integration with GitHub API for artifact versioning.
-- **NFR5**: Communication between backend and AI agents should use MCP (Model Context Protocol).
+2. Overall Description
+2.1 Product Perspective
 
-## Acceptance Criteria
+The Library Management System will be a web-based application that interacts with a central database to manage library records.
 
-### AC1 (References: )
-- The platform should be able to convert raw requirements into structured SDLC artifacts.
+2.2 Product Functions
 
-### AC2 (References: )
-- Human validation checkpoints should be implemented to ensure all generated artifacts are validated.
+The system will provide the following major functions:
 
-### AC3 (References: )
-- Generated artifacts should be integrated into Jira workflows via the Jira API.
+Book management
 
-### AC4 (References: )
-- Specialized AI agents should be used to generate different types of SDLC artifacts.
+Member management
 
-### AC5 (References: )
-- All generated artifacts should be stored in a version-controlled manner using GitHub.
+Book issuing and returning
 
-### AC6 (References: )
-- Validation, retry logic, and structured outputs should be implemented to ensure high-quality artifacts.
+Book search
 
-### AC7 (References: )
-- The frontend should provide a React web interface for uploads, review, and approvals.
+Fine calculation
 
-### AC8 (References: )
-- The backend should use Java/Spring Boot API for orchestration and processing.
+Record maintenance
 
-### AC9 (References: )
-- AI agents should be developed using Python and LangGraph + HuggingFace models.
+2.3 User Classes
+User Type	Description
+Librarian	Manages books, members, and transactions
+Member	Searches and borrows books
+2.4 Operating Environment
 
-### AC10 (References: )
-- Integration with GitHub API for artifact versioning should be implemented.
+Web browser (Chrome, Firefox, Edge)
 
-### AC11 (References: )
-- Communication between backend and AI agents should use MCP (Model Context Protocol).
+Server running backend (Java/Python/Node)
+
+Database (MySQL/PostgreSQL)
+
+3. Functional Requirements
+FR1: User Registration
+
+The system shall allow new members to register in the library system.
+
+FR2: User Login
+
+The system shall allow registered users to log in using username and password.
+
+FR3: Book Management
+
+The librarian shall be able to:
+
+Add new books
+
+Update book details
+
+Delete books
+
+View available books
+
+FR4: Search Books
+
+The system shall allow users to search books by:
+
+Title
+
+Author
+
+ISBN
+
+Category
+
+FR5: Issue Book
+
+The librarian shall be able to issue books to members.
+
+FR6: Return Book
+
+The system shall allow members to return borrowed books.
+
+FR7: Fine Calculation
+
+The system shall automatically calculate fines if the book is returned after the due date.
+
+FR8: View Borrowed Books
+
+Members shall be able to view books currently borrowed.
+
+4. Non-Functional Requirements
+NFR1: Performance
+
+The system should respond to user requests within 2 seconds.
+
+NFR2: Security
+
+Users must authenticate before accessing the system.
+
+Passwords must be securely stored.
+
+NFR3: Usability
+
+The interface should be simple and user-friendly.
+
+NFR4: Reliability
+
+The system should maintain data consistency and avoid data loss.
+
+NFR5: Scalability
+
+The system should support increasing number of books and users.
+
+5. System Features
+5.1 Book Management
+
+Add new books
+
+Update book information
+
+Delete books
+
+Track availability
+
+5.2 Member Management
+
+Register new members
+
+Update member details
+
+View member records
+
+5.3 Borrowing System
+
+Issue books
+
+Return books
+
+Maintain issue history
+
+6. External Interface Requirements
+6.1 User Interface
+
+The system will provide a web-based graphical interface for librarians and members.
+
+6.2 Database Interface
+
+The system will interact with a relational database to store:
+
+Book records
+
+Member records
+
+Issue history
+
+7. Constraints
+
+Internet connection required for web version.
+
+Only registered members can borrow books.
+
+A member can borrow a limited number of books.
