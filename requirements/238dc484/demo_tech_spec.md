@@ -2,17 +2,17 @@
 
 ## 1. System Overview
 
-**Project Name:** Cab Booking System
+**Project Name:** Exam Management System
 
-**Description:** A web/mobile-based application for passengers to book cabs, track drivers, and manage payments. Drivers can accept ride requests and manage their availability. Administrators manage users, drivers, and system operations.
+**Description:** A web-based application for managing examinations in educational institutions, allowing administrators to manage users and exam schedules, teachers to create and manage question papers, and students to appear for exams and view results.
 
 **Architecture Pattern:** Microservices
 
 ### Key Design Decisions
 
-- Use microservices architecture for scalability and maintainability
-- Implement real-time location tracking using websockets
-- Use OAuth2 for secure user authentication
+- Use a microservices architecture to ensure scalability and maintainability
+- Implement RESTful APIs for communication between services
+- Use a database to store user, exam, question, and result data
 
 ## 2. Data Model
 
@@ -21,36 +21,46 @@
 | Field | Type | Description |
 |-------|------|-------------|
 | id | UUID | Unique identifier for the user |
-| name | String | Name of the user |
-| phone_number | String | Phone number of the user |
-| password | String | Password of the user |
-| role | String | Role of the user (Passenger, Driver, Admin) |
+| username | String | Username for the user |
+| password | String | Password for the user |
+| role | String | Role of the user (Student, Teacher, Administrator) |
+| email | String | Email address of the user |
 
-**Relationships:** Driver, Passenger, Admin
+**Relationships:** Exam, Question
 
-### Entity: Driver
+### Entity: Exam
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the driver |
+| id | UUID | Unique identifier for the exam |
+| title | String | Title of the exam |
+| date | Date | Date of the exam |
+| time | Time | Time of the exam |
+| status | String | Status of the exam (Scheduled, In Progress, Completed) |
+
+**Relationships:** Question, User
+
+### Entity: Question
+
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Unique identifier for the question |
+| text | String | Text of the question |
+| type | String | Type of the question (Multiple Choice, Short Answer, etc.) |
+| answer | String | Correct answer for the question |
+
+**Relationships:** Exam
+
+### Entity: Result
+
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Unique identifier for the result |
+| score | Integer | Score obtained by the user in the exam |
 | user_id | UUID | Foreign key to the User entity |
-| availability_status | String | Availability status of the driver (Online, Offline) |
+| exam_id | UUID | Foreign key to the Exam entity |
 
-**Relationships:** User
-
-### Entity: Ride
-
-| Field | Type | Description |
-|-------|------|-------------|
-| id | UUID | Unique identifier for the ride |
-| pickup_location | String | Pickup location of the ride |
-| destination_location | String | Destination location of the ride |
-| status | String | Status of the ride (Pending, In Progress, Completed) |
-| driver_id | UUID | Foreign key to the Driver entity |
-| passenger_id | UUID | Foreign key to the User entity (Passenger) |
-| payment_method | String | Payment method used for the ride |
-
-**Relationships:** Driver, Passenger
+**Relationships:** User, Exam
 
 ## 3. API Design
 
@@ -58,73 +68,80 @@
 |--------|------|-------------|
 | POST | `/users/register` | Register a new user |
 | POST | `/users/login` | Login a registered user |
-| POST | `/rides/book` | Book a ride |
-| GET | `/rides/{ride_id}` | Get ride details |
-| PUT | `/drivers/{driver_id}/status` | Update driver availability status |
+| POST | `/exams/create` | Create a new exam |
+| POST | `/exams/schedule` | Schedule an exam |
+| POST | `/exams/take` | Take an exam |
+| GET | `/exams/results` | Get exam results |
 
 ### POST `/users/register`
 
 Register a new user
 
-**Request Body:** name, phone_number, password
+**Request Body:** username, password, role, email
 
-**Response Body:** id, name, phone_number, role
+**Response Body:** id, username, role, email
 
 ### POST `/users/login`
 
 Login a registered user
 
-**Request Body:** phone_number, password
+**Request Body:** username, password
 
-**Response Body:** id, name, phone_number, role
+**Response Body:** token
 
-### POST `/rides/book`
+### POST `/exams/create`
 
-Book a ride
+Create a new exam
 
-**Request Body:** pickup_location, destination_location
+**Request Body:** title, date, time, questions
 
-**Response Body:** id, pickup_location, destination_location, status, driver_id, passenger_id, payment_method
+**Response Body:** id, title, date, time
 
-### GET `/rides/{ride_id}`
+### POST `/exams/schedule`
 
-Get ride details
+Schedule an exam
 
-**Response Body:** id, pickup_location, destination_location, status, driver_id, passenger_id, payment_method
+**Request Body:** exam_id, date, time
 
-### PUT `/drivers/{driver_id}/status`
+**Response Body:** id, title, date, time
 
-Update driver availability status
+### POST `/exams/take`
 
-**Request Body:** availability_status
+Take an exam
 
-**Response Body:** id, availability_status
+**Request Body:** exam_id, answers
+
+**Response Body:** score
+
+### GET `/exams/results`
+
+Get exam results
+
+**Response Body:** id, score, user_id, exam_id
 
 ## 4. Component Breakdown
 
 ### UserManagementService
 
-**Responsibility:** Handles user registration, login, and management
+**Responsibility:** Handles user registration and login
 
-**Depends on:** UserService, DriverService
+### ExamManagementService
 
-### RideService
+**Responsibility:** Handles exam creation, scheduling, and result generation
 
-**Responsibility:** Handles ride booking, tracking, and completion
+**Depends on:** UserManagementService
 
-**Depends on:** UserService, DriverService
+### QuestionManagementService
 
-### PaymentService
+**Responsibility:** Handles question creation and management
 
-**Responsibility:** Handles payment processing
+**Depends on:** UserManagementService
 
-**Depends on:** UserService
+### ResultManagementService
 
-### DriverService
+**Responsibility:** Handles result generation and storage
 
-**Responsibility:** Handles driver allocation and management
-
-**Depends on:** UserService
+**Depends on:** UserManagementService, ExamManagementService
 
 ## 5. Tech Stack
 
@@ -139,10 +156,12 @@ Update driver availability status
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Scalability issues with high user load | System performance degradation | Implement load balancing and auto-scaling on AWS |
-| Data breaches due to insecure storage | Loss of user trust and data exposure | Use encryption and secure storage practices |
+| Scalability issues with high concurrent user load | System performance degradation | Implement load balancing and use a scalable cloud infrastructure |
+| Data breaches due to insecure data storage | Data loss and potential legal issues | Implement encryption and secure data storage practices |
 
 ## 7. Open Questions
 
-- What are the exact payment methods to be supported?
-- How will GPS data be integrated for location tracking?
+- What specific authentication mechanisms will be used?
+- How will the system handle time zones for exam scheduling?
+- What is the expected number of concurrent users?
+- Will there be any specific requirements for accessibility?
