@@ -10,9 +10,9 @@
 
 ### Key Design Decisions
 
-- Use microservices for scalability and maintainability
-- Implement RESTful APIs for service communication
-- Utilize a database for persistent storage
+- Use microservices architecture for scalability and maintainability
+- Implement RESTful APIs for easy integration and scalability
+- Use a database to store and manage data
 
 ## 2. Data Model
 
@@ -23,8 +23,8 @@
 | id | UUID | Unique identifier for the user |
 | name | String | Name of the user |
 | email | String | Email address of the user |
-| password | String | Password of the user (hashed) |
-| role | String | Role of the user (Customer or Administrator) |
+| password | String | Password of the user |
+| role | String | Role of the user (Administrator/Customer) |
 
 **Relationships:** Movie, Booking
 
@@ -68,139 +68,123 @@
 | id | UUID | Unique identifier for the booking |
 | user_id | UUID | Foreign key to the user entity |
 | show_id | UUID | Foreign key to the show entity |
-| total_amount | Decimal | Total amount for the booking |
+| seat_ids | List<UUID> | List of seat IDs for the booking |
+| total_amount | Float | Total amount for the booking |
+| status | String | Status of the booking (Pending/Paid) |
 
-**Relationships:** Seat
+**Relationships:** User, Show
 
 ## 3. API Design
 
 | Method | Path | Description |
 |--------|------|-------------|
 | POST | `/users/register` | Register a new user |
-| POST | `/users/login` | Log in a user |
-| GET | `/movies` | Get a list of movies |
-| POST | `/movies` | Add a new movie |
-| PUT | `/movies/{id}` | Update a movie |
-| DELETE | `/movies/{id}` | Delete a movie |
-| POST | `/shows` | Schedule a new show |
-| GET | `/shows` | Get a list of shows |
+| POST | `/users/login` | User login |
+| GET | `/movies` | Get list of movies |
+| GET | `/movies/{movie_id}` | Get movie details |
+| GET | `/shows` | Get list of shows |
+| GET | `/shows/{show_id}` | Get show details |
 | GET | `/seats/{show_id}` | Get available seats for a show |
-| POST | `/bookings` | Book seats for a show |
-| GET | `/bookings/{id}` | Get booking details |
+| POST | `/bookings` | Book tickets |
+| GET | `/bookings/{user_id}` | Get booking history |
 
 ### POST `/users/register`
 
 Register a new user
 
-**Request Body:** name, email, password
+**Request Body:** User registration details
 
-**Response Body:** id, name, email, role
+**Response Body:** User registration confirmation
 
 ### POST `/users/login`
 
-Log in a user
+User login
 
-**Request Body:** email, password
+**Request Body:** User login credentials
 
-**Response Body:** token
+**Response Body:** User login confirmation
 
 ### GET `/movies`
 
-Get a list of movies
+Get list of movies
 
-**Response Body:** [{id, title, description, duration}]
+**Response Body:** List of movies
 
-### POST `/movies`
+### GET `/movies/{movie_id}`
 
-Add a new movie
+Get movie details
 
-**Request Body:** title, description, duration
-
-**Response Body:** {id, title, description, duration}
-
-### PUT `/movies/{id}`
-
-Update a movie
-
-**Request Body:** title, description, duration
-
-**Response Body:** {id, title, description, duration}
-
-### DELETE `/movies/{id}`
-
-Delete a movie
-
-### POST `/shows`
-
-Schedule a new show
-
-**Request Body:** movie_id, hall_id, start_time
-
-**Response Body:** {id, movie_id, hall_id, start_time}
+**Response Body:** Movie details
 
 ### GET `/shows`
 
-Get a list of shows
+Get list of shows
 
-**Response Body:** [{id, movie_id, hall_id, start_time}]
+**Response Body:** List of shows
+
+### GET `/shows/{show_id}`
+
+Get show details
+
+**Response Body:** Show details
 
 ### GET `/seats/{show_id}`
 
 Get available seats for a show
 
-**Response Body:** [{id, row, column, is_booked}]
+**Response Body:** List of available seats
 
 ### POST `/bookings`
 
-Book seats for a show
+Book tickets
 
-**Request Body:** show_id, seat_ids
+**Request Body:** Seat selection details
 
-**Response Body:** {id, user_id, show_id, total_amount}
+**Response Body:** Booking confirmation
 
-### GET `/bookings/{id}`
+### GET `/bookings/{user_id}`
 
-Get booking details
+Get booking history
 
-**Response Body:** {id, user_id, show_id, total_amount, seats}
+**Response Body:** List of bookings
 
 ## 4. Component Breakdown
 
-### UserService
+### User Management Service
 
-**Responsibility:** Handles user registration, login, and authentication
+**Responsibility:** Handles user registration, login, and management
 
-**Depends on:** UserService
+**Depends on:** Database
 
-### MovieService
+### Movie Management Service
 
-**Responsibility:** Manages movie details and schedules
+**Responsibility:** Handles movie addition, update, and management
 
-**Depends on:** UserService
+**Depends on:** Database
 
-### ShowService
+### Show Management Service
 
-**Responsibility:** Manages show schedules and seat availability
+**Responsibility:** Handles show scheduling and management
 
-**Depends on:** MovieService, SeatService
+**Depends on:** Database
 
-### SeatService
+### Seat Management Service
 
-**Responsibility:** Manages seat availability and booking
+**Responsibility:** Handles seat availability and management
 
-**Depends on:** ShowService
+**Depends on:** Database
 
-### BookingService
+### Booking Service
 
-**Responsibility:** Manages booking details and payment processing
+**Responsibility:** Handles ticket booking and payment processing
 
-**Depends on:** UserService, ShowService
+**Depends on:** Database
 
 ## 5. Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | React |
+| Frontend | React.js |
 | Backend | Node.js |
 | Database | PostgreSQL |
 | Infrastructure | AWS |
@@ -209,10 +193,10 @@ Get booking details
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| High traffic during peak movie showtimes | System performance degradation | Implement load balancing and caching strategies |
-| Data breaches | Loss of user data and trust | Implement robust security measures, including encryption and regular security audits |
+| Database performance issues | High | Optimize queries and use indexing |
+| Security vulnerabilities | High | Implement secure coding practices and regular security audits |
 
 ## 7. Open Questions
 
-- What payment gateway will be used for secure transactions?
-- How will the system handle seat availability in real-time?
+- What are the specific payment gateway requirements?
+- What are the exact seat layout requirements for each hall?
