@@ -21,8 +21,7 @@
 | Field | Type | Description |
 |-------|------|-------------|
 | id | UUID | Unique identifier for the user |
-| name | String | Full name of the user |
-| email | String | Email address of the user |
+| name | String | Name of the user |
 | phone_number | String | Phone number of the user |
 | password | String | Password of the user |
 | role | String | Role of the user (Passenger, Driver, Admin) |
@@ -47,23 +46,21 @@
 | pickup_location | String | Pickup location of the ride |
 | destination_location | String | Destination location of the ride |
 | status | String | Status of the ride (Pending, In Progress, Completed) |
-| created_at | Timestamp | Timestamp when the ride was created |
-| updated_at | Timestamp | Timestamp when the ride was last updated |
+| driver_id | UUID | Foreign key to the Driver entity |
+| passenger_id | UUID | Foreign key to the User entity (Passenger) |
+| payment_method | String | Payment method used for the ride |
 
-**Relationships:** Passenger, Driver
+**Relationships:** Driver, Passenger
 
 ## 3. API Design
 
 | Method | Path | Description |
 |--------|------|-------------|
 | POST | `/users/register` | Register a new user |
-| POST | `/users/login` | Log in a user |
-| POST | `/rides/book` | Book a cab |
+| POST | `/users/login` | Login a registered user |
+| POST | `/rides/book` | Book a ride |
 | GET | `/rides/{ride_id}` | Get ride details |
-| PUT | `/rides/{ride_id}/mark-as-completed` | Mark ride as completed |
-| GET | `/drivers/availability` | Get driver availability |
-| PUT | `/drivers/availability` | Update driver availability |
-| GET | `/users/history` | Get user ride history |
+| PUT | `/drivers/{driver_id}/status` | Update driver availability status |
 
 ### POST `/users/register`
 
@@ -71,75 +68,63 @@ Register a new user
 
 **Request Body:** name, phone_number, password
 
-**Response Body:** id, name, email, phone_number, role
+**Response Body:** id, name, phone_number, role
 
 ### POST `/users/login`
 
-Log in a user
+Login a registered user
 
-**Request Body:** email, password
+**Request Body:** phone_number, password
 
-**Response Body:** access_token, user_id, role
+**Response Body:** id, name, phone_number, role
 
 ### POST `/rides/book`
 
-Book a cab
+Book a ride
 
 **Request Body:** pickup_location, destination_location
 
-**Response Body:** id, pickup_location, destination_location, status
+**Response Body:** id, pickup_location, destination_location, status, driver_id, passenger_id, payment_method
 
 ### GET `/rides/{ride_id}`
 
 Get ride details
 
-**Response Body:** id, pickup_location, destination_location, status, created_at, updated_at
+**Response Body:** id, pickup_location, destination_location, status, driver_id, passenger_id, payment_method
 
-### PUT `/rides/{ride_id}/mark-as-completed`
+### PUT `/drivers/{driver_id}/status`
 
-Mark ride as completed
-
-**Response Body:** id, status
-
-### GET `/drivers/availability`
-
-Get driver availability
-
-**Response Body:** id, availability_status
-
-### PUT `/drivers/availability`
-
-Update driver availability
+Update driver availability status
 
 **Request Body:** availability_status
 
 **Response Body:** id, availability_status
 
-### GET `/users/history`
-
-Get user ride history
-
-**Response Body:** id, pickup_location, destination_location, status, created_at, updated_at
-
 ## 4. Component Breakdown
 
-### UserService
+### UserManagementService
 
 **Responsibility:** Handles user registration, login, and management
 
-**Depends on:** UserService
+**Depends on:** UserService, DriverService
 
 ### RideService
 
 **Responsibility:** Handles ride booking, tracking, and completion
 
-**Depends on:** UserService, RideService
+**Depends on:** UserService, DriverService
+
+### PaymentService
+
+**Responsibility:** Handles payment processing
+
+**Depends on:** UserService
 
 ### DriverService
 
-**Responsibility:** Handles driver assignment, availability, and management
+**Responsibility:** Handles driver allocation and management
 
-**Depends on:** UserService, DriverService
+**Depends on:** UserService
 
 ## 5. Tech Stack
 
@@ -154,10 +139,10 @@ Get user ride history
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| High traffic during peak hours | System performance degradation | Implement load balancing and caching strategies |
-| Data breaches | Loss of user trust and data | Implement strong encryption and regular security audits |
+| Scalability issues with high user load | System performance degradation | Implement load balancing and auto-scaling on AWS |
+| Data breaches due to insecure storage | Loss of user trust and data exposure | Use encryption and secure storage practices |
 
 ## 7. Open Questions
 
-- What are the specific payment methods to be supported?
-- How will user verification be handled for drivers?
+- What are the exact payment methods to be supported?
+- How will GPS data be integrated for location tracking?
