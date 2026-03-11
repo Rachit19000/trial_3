@@ -1,102 +1,84 @@
-# User Stories: Cab Booking System
+# User Stories: Exam Management System
 
-**Total User Stories:** 9
-**Estimated Effort:** 16 days
+**Total User Stories:** 8
+**Estimated Effort:** 32 days
 
 ## Sprint Week 1: User Management
 
-### US001: Passenger can register
-Passengers can register using name, phone number, and password.
+### US001: User Registration
+Allow students and teachers to register in the system.
 
 **Acceptance Criteria:**
-- Passengers can enter their name, phone number, and password.
-- System validates the entered details.
-- System stores the user details securely.
+- Students and teachers can register using their details.
+- Registration process is secure.
 
 **Linked FRs:** FR1
 
-### US002: Passenger can log in
-Registered users can log in securely.
+### US002: User Login
+Allow registered users to log in using their credentials.
 
 **Acceptance Criteria:**
-- Users can enter their credentials.
-- System validates the entered credentials.
-- System provides access to the application.
+- Users can log in using their registered credentials.
+- Login process is secure.
 
 **Linked FRs:** FR2
 
-## Sprint Week 2: Cab Booking and Driver Assignment
+## Sprint Week 2: Exam Management
 
-### US003: Passenger can book a cab
-Passengers can book a cab by entering pickup and destination locations.
+### US003: Exam Creation
+Teachers shall be able to create exams and upload questions.
 
 **Acceptance Criteria:**
-- Passengers can enter pickup and destination locations.
-- System validates the entered locations.
-- System assigns a cab to the passenger.
+- Teachers can create exams and upload questions.
+- Questions are stored in the system.
 
 **Linked FRs:** FR3
 
-### US004: Driver can accept ride requests
-The system assigns the nearest available driver to the passenger.
+## Sprint Week 3: Exam Management
+
+### US004: Exam Scheduling
+The administrator shall schedule exams with date and time.
 
 **Acceptance Criteria:**
-- The system finds the nearest available driver.
-- The system assigns the driver to the passenger.
-- The system updates the driver's availability status.
+- Exams can be scheduled with date and time.
+- Scheduled exams are displayed to users.
 
 **Linked FRs:** FR4
 
-## Sprint Week 3: Ride Tracking and Completion
+## Sprint Week 4: Result Management
 
-### US005: Passenger can track the driver’s location
-Passengers can track the driver’s location during the ride.
+### US005: Take Exam
+Students shall be able to take exams online within the scheduled time.
 
 **Acceptance Criteria:**
-- Passengers can view the driver’s current location.
-- The system updates the driver’s location in real-time.
-- The system provides an estimated time of arrival.
+- Students can take exams online.
+- Exams are taken within the scheduled time.
 
 **Linked FRs:** FR5
 
-### US006: Driver can mark the ride as completed
-Drivers can mark the ride as completed after reaching the destination.
+### US006: Automatic Evaluation
+The system shall automatically evaluate objective-type questions.
 
 **Acceptance Criteria:**
-- Drivers can mark the ride as completed.
-- The system updates the ride status.
-- The system records the trip details.
+- Objective-type questions are automatically evaluated.
+- Results are generated based on the evaluation.
 
 **Linked FRs:** FR6
 
-## Sprint Week 4: Payment and Ride History Management
-
-### US007: Passenger can pay for the ride
-Passengers can pay through online payment methods or cash.
+### US007: Result Generation
+The system shall generate results after exam completion.
 
 **Acceptance Criteria:**
-- Passengers can choose their preferred payment method.
-- The system processes the payment.
-- The system records the payment details.
+- Results are generated after exam completion.
+- Results are stored in the system.
 
 **Linked FRs:** FR7
 
-### US008: Passenger can view ride history
-Passengers can view their previous ride details.
+### US008: Result Viewing
+Students shall be able to view their exam results.
 
 **Acceptance Criteria:**
-- Passengers can view their ride history.
-- The system displays the ride details.
-- The system allows filtering by date.
+- Students can view their exam results.
+- Results are displayed accurately.
 
 **Linked FRs:** FR8
-
-### US009: Driver can update availability status
-Drivers can update their availability status (online/offline).
-
-**Acceptance Criteria:**
-- Drivers can update their availability status.
-- The system updates the driver’s status.
-- The system reflects the updated status in ride assignments.
-
-**Linked FRs:** FR9
