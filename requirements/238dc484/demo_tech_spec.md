@@ -4,15 +4,15 @@
 
 **Project Name:** Parking Lot Management System
 
-**Description:** A web-based or desktop application designed to automate the management of parking spaces in a parking facility, including vehicle entry and exit tracking, slot management, and fee calculation.
+**Description:** A system to manage vehicle entry, exit, and parking slot allocation in a parking lot.
 
 **Architecture Pattern:** Microservices
 
 ### Key Design Decisions
 
 - Use microservices architecture for scalability and maintainability
-- Implement real-time updates for slot availability
-- Integrate with payment gateways for seamless payment processing
+- Implement RESTful APIs for communication between services
+- Utilize a distributed database for storing parking data
 
 ## 2. Data Model
 
@@ -23,91 +23,86 @@
 | vin | string | Unique vehicle identification number |
 | make | string | Vehicle make |
 | model | string | Vehicle model |
-| color | string | Vehicle color |
 | entry_time | datetime | Time of vehicle entry |
 | exit_time | datetime | Time of vehicle exit |
-| slot_id | integer | ID of the assigned parking slot |
+| parking_fee | float | Parking fee amount |
 
-**Relationships:** slot
+**Relationships:** parking_slot
 
-### Entity: Slot
+### Entity: ParkingSlot
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | integer | Unique identifier for the parking slot |
-| type | string | Type of vehicle (car, motorcycle, etc.) |
-| status | string | Status of the slot (available, occupied) |
+| slot_id | int | Unique identifier for the parking slot |
+| status | string | Status of the parking slot (available/occupied) |
+| location | string | Location of the parking slot |
 
 **Relationships:** vehicle
-
-### Entity: Admin
-
-| Field | Type | Description |
-|-------|------|-------------|
-| username | string | Username for admin login |
-| password | string | Password for admin login |
-| role | string | Role of the admin (e.g., manager, operator) |
-
-**Relationships:** slot
 
 ## 3. API Design
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/vehicles` | Register a vehicle entering the parking lot |
-| POST | `/tickets` | Generate a parking ticket |
-| POST | `/slots` | Assign an available parking slot |
+| POST | `/vehicles` | Record vehicle entry details |
+| POST | `/tickets` | Generate parking ticket |
+| POST | `/slots` | Assign available parking slot |
 | GET | `/slots/available` | Display available parking slots |
-| PUT | `/slots/{id}` | Update slot status |
+| PUT | `/slots/{slot_id}` | Update slot status |
 | POST | `/slots` | Add or remove parking slots |
 | POST | `/vehicles/exit` | Record vehicle exit time |
-| GET | `/reports/daily` | Generate daily parking records |
-| GET | `/reports/revenue` | Generate total revenue report |
-| GET | `/reports/utilization` | Generate slot utilization report |
-| POST | `/admins` | Manage staff accounts |
-| POST | `/auth/login` | Authenticate users before login |
+| POST | `/duration` | Calculate parking duration |
+| POST | `/fee` | Generate parking fee |
+| POST | `/reports/daily` | Generate daily parking records |
+| POST | `/reports/revenue` | Generate total revenue report |
+| POST | `/reports/utilization` | Generate slot utilization report |
+| POST | `/users` | Manage staff accounts |
+| POST | `/auth` | Authenticate users |
 
 ### POST `/vehicles`
 
-Register a vehicle entering the parking lot
+Record vehicle entry details
 
-**Request Body:** vin, make, model, color
+**Request Body:** vin, make, model
 
-**Response Body:** ticket_id, slot_id
+**Response Body:** vin, make, model, entry_time
 
 ### POST `/tickets`
 
-Generate a parking ticket
+Generate parking ticket
 
 **Request Body:** vin
 
-**Response Body:** ticket_id
+**Response Body:** ticket_id, entry_time, parking_fee
 
 ### POST `/slots`
 
-Assign an available parking slot
+Assign available parking slot
 
 **Request Body:** vin
 
-**Response Body:** slot_id
+**Response Body:** slot_id, status
 
 ### GET `/slots/available`
 
 Display available parking slots
 
-**Response Body:** slot_ids
+**Response Body:** [{slot_id, status, location}]
 
-### PUT `/slots/{id}`
+### PUT `/slots/{slot_id}`
 
 Update slot status
 
 **Request Body:** status
 
+**Response Body:** slot_id, status
+
 ### POST `/slots`
 
 Add or remove parking slots
 
-**Request Body:** id, type, status
+**Request Body:** action (add/remove), slot_id
+
+**Response Body:** slot_id, status
 
 ### POST `/vehicles/exit`
 
@@ -117,35 +112,53 @@ Record vehicle exit time
 
 **Response Body:** exit_time
 
-### GET `/reports/daily`
+### POST `/duration`
+
+Calculate parking duration
+
+**Request Body:** vin
+
+**Response Body:** duration
+
+### POST `/fee`
+
+Generate parking fee
+
+**Request Body:** vin
+
+**Response Body:** parking_fee
+
+### POST `/reports/daily`
 
 Generate daily parking records
 
-**Response Body:** parking_records
+**Request Body:** date
 
-### GET `/reports/revenue`
+**Response Body:** [{vin, make, model, entry_time, exit_time, parking_fee}]
+
+### POST `/reports/revenue`
 
 Generate total revenue report
 
 **Response Body:** total_revenue
 
-### GET `/reports/utilization`
+### POST `/reports/utilization`
 
 Generate slot utilization report
 
-**Response Body:** utilization_data
+**Response Body:** [{slot_id, status, utilization_percentage}]
 
-### POST `/admins`
+### POST `/users`
 
 Manage staff accounts
 
-**Request Body:** username, password, role
+**Request Body:** action (add/remove), user_id
 
-**Response Body:** admin_id
+**Response Body:** user_id, status
 
-### POST `/auth/login`
+### POST `/auth`
 
-Authenticate users before login
+Authenticate users
 
 **Request Body:** username, password
 
@@ -155,27 +168,31 @@ Authenticate users before login
 
 ### VehicleService
 
-**Responsibility:** Handles vehicle registration, ticket generation, and slot assignment
+**Responsibility:** Handles vehicle entry, exit, and parking slot assignment
 
-**Depends on:** SlotService, AdminService
+**Depends on:** ParkingSlotService
 
-### SlotService
+### ParkingSlotService
 
-**Responsibility:** Manages slot availability and updates slot status
+**Responsibility:** Manages parking slot status and availability
 
 **Depends on:** VehicleService
 
-### AdminService
+### ReportService
 
-**Responsibility:** Handles admin account management and report generation
+**Responsibility:** Generates various reports
 
-**Depends on:** VehicleService, SlotService
+**Depends on:** VehicleService, ParkingSlotService
+
+### UserService
+
+**Responsibility:** Manages user accounts and authentication
 
 ## 5. Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | React.js |
+| Frontend | React |
 | Backend | Node.js with Express |
 | Database | PostgreSQL |
 | Infrastructure | AWS |
@@ -185,10 +202,9 @@ Authenticate users before login
 | Risk | Impact | Mitigation |
 |------|--------|------------|
 | High traffic during peak hours | System performance degradation | Implement load balancing and caching strategies |
-| Data breaches | Loss of sensitive data | Implement strong encryption and regular security audits |
+| Data breaches | Data loss and security compromise | Implement strong encryption and regular security audits |
 
 ## 7. Open Questions
 
-- What are the specific vehicle types to be supported?
-- How will the system handle multiple parking lots?
-- What are the payment gateway options to be integrated?
+- What is the expected peak traffic during peak hours?
+- What are the specific requirements for user authentication?
