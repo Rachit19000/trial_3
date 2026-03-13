@@ -2,153 +2,181 @@
 
 ## 1. System Overview
 
-**Project Name:** Exam Management System
+**Project Name:** Parking Lot Management System
 
-**Description:** A web-based application for managing examinations in educational institutions, allowing administrators to manage users and exam schedules, teachers to create and manage question papers, and students to appear for exams and view results.
+**Description:** A web-based or desktop application designed to automate the management of parking spaces in a parking facility, including vehicle entry and exit tracking, slot management, and fee calculation.
 
 **Architecture Pattern:** Microservices
 
 ### Key Design Decisions
 
-- Use a microservices architecture to ensure scalability and maintainability
-- Implement RESTful APIs for communication between services
-- Use a database to store user, exam, question, and result data
+- Use microservices architecture for scalability and maintainability
+- Implement real-time updates for slot availability
+- Integrate with payment gateways for seamless payment processing
 
 ## 2. Data Model
 
-### Entity: User
+### Entity: Vehicle
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the user |
-| username | String | Username for the user |
-| password | String | Password for the user |
-| role | String | Role of the user (Student, Teacher, Administrator) |
-| email | String | Email address of the user |
+| vin | string | Unique vehicle identification number |
+| make | string | Vehicle make |
+| model | string | Vehicle model |
+| color | string | Vehicle color |
+| entry_time | datetime | Time of vehicle entry |
+| exit_time | datetime | Time of vehicle exit |
+| slot_id | integer | ID of the assigned parking slot |
 
-**Relationships:** Exam, Question
+**Relationships:** slot
 
-### Entity: Exam
-
-| Field | Type | Description |
-|-------|------|-------------|
-| id | UUID | Unique identifier for the exam |
-| title | String | Title of the exam |
-| date | Date | Date of the exam |
-| time | Time | Time of the exam |
-| status | String | Status of the exam (Scheduled, In Progress, Completed) |
-
-**Relationships:** Question, User
-
-### Entity: Question
+### Entity: Slot
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the question |
-| text | String | Text of the question |
-| type | String | Type of the question (Multiple Choice, Short Answer, etc.) |
-| answer | String | Correct answer for the question |
+| id | integer | Unique identifier for the parking slot |
+| type | string | Type of vehicle (car, motorcycle, etc.) |
+| status | string | Status of the slot (available, occupied) |
 
-**Relationships:** Exam
+**Relationships:** vehicle
 
-### Entity: Result
+### Entity: Admin
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | UUID | Unique identifier for the result |
-| score | Integer | Score obtained by the user in the exam |
-| user_id | UUID | Foreign key to the User entity |
-| exam_id | UUID | Foreign key to the Exam entity |
+| username | string | Username for admin login |
+| password | string | Password for admin login |
+| role | string | Role of the admin (e.g., manager, operator) |
 
-**Relationships:** User, Exam
+**Relationships:** slot
 
 ## 3. API Design
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/users/register` | Register a new user |
-| POST | `/users/login` | Login a registered user |
-| POST | `/exams/create` | Create a new exam |
-| POST | `/exams/schedule` | Schedule an exam |
-| POST | `/exams/take` | Take an exam |
-| GET | `/exams/results` | Get exam results |
+| POST | `/vehicles` | Register a vehicle entering the parking lot |
+| POST | `/tickets` | Generate a parking ticket |
+| POST | `/slots` | Assign an available parking slot |
+| GET | `/slots/available` | Display available parking slots |
+| PUT | `/slots/{id}` | Update slot status |
+| POST | `/slots` | Add or remove parking slots |
+| POST | `/vehicles/exit` | Record vehicle exit time |
+| GET | `/reports/daily` | Generate daily parking records |
+| GET | `/reports/revenue` | Generate total revenue report |
+| GET | `/reports/utilization` | Generate slot utilization report |
+| POST | `/admins` | Manage staff accounts |
+| POST | `/auth/login` | Authenticate users before login |
 
-### POST `/users/register`
+### POST `/vehicles`
 
-Register a new user
+Register a vehicle entering the parking lot
 
-**Request Body:** username, password, role, email
+**Request Body:** vin, make, model, color
 
-**Response Body:** id, username, role, email
+**Response Body:** ticket_id, slot_id
 
-### POST `/users/login`
+### POST `/tickets`
 
-Login a registered user
+Generate a parking ticket
+
+**Request Body:** vin
+
+**Response Body:** ticket_id
+
+### POST `/slots`
+
+Assign an available parking slot
+
+**Request Body:** vin
+
+**Response Body:** slot_id
+
+### GET `/slots/available`
+
+Display available parking slots
+
+**Response Body:** slot_ids
+
+### PUT `/slots/{id}`
+
+Update slot status
+
+**Request Body:** status
+
+### POST `/slots`
+
+Add or remove parking slots
+
+**Request Body:** id, type, status
+
+### POST `/vehicles/exit`
+
+Record vehicle exit time
+
+**Request Body:** vin
+
+**Response Body:** exit_time
+
+### GET `/reports/daily`
+
+Generate daily parking records
+
+**Response Body:** parking_records
+
+### GET `/reports/revenue`
+
+Generate total revenue report
+
+**Response Body:** total_revenue
+
+### GET `/reports/utilization`
+
+Generate slot utilization report
+
+**Response Body:** utilization_data
+
+### POST `/admins`
+
+Manage staff accounts
+
+**Request Body:** username, password, role
+
+**Response Body:** admin_id
+
+### POST `/auth/login`
+
+Authenticate users before login
 
 **Request Body:** username, password
 
 **Response Body:** token
 
-### POST `/exams/create`
-
-Create a new exam
-
-**Request Body:** title, date, time, questions
-
-**Response Body:** id, title, date, time
-
-### POST `/exams/schedule`
-
-Schedule an exam
-
-**Request Body:** exam_id, date, time
-
-**Response Body:** id, title, date, time
-
-### POST `/exams/take`
-
-Take an exam
-
-**Request Body:** exam_id, answers
-
-**Response Body:** score
-
-### GET `/exams/results`
-
-Get exam results
-
-**Response Body:** id, score, user_id, exam_id
-
 ## 4. Component Breakdown
 
-### UserManagementService
+### VehicleService
 
-**Responsibility:** Handles user registration and login
+**Responsibility:** Handles vehicle registration, ticket generation, and slot assignment
 
-### ExamManagementService
+**Depends on:** SlotService, AdminService
 
-**Responsibility:** Handles exam creation, scheduling, and result generation
+### SlotService
 
-**Depends on:** UserManagementService
+**Responsibility:** Manages slot availability and updates slot status
 
-### QuestionManagementService
+**Depends on:** VehicleService
 
-**Responsibility:** Handles question creation and management
+### AdminService
 
-**Depends on:** UserManagementService
+**Responsibility:** Handles admin account management and report generation
 
-### ResultManagementService
-
-**Responsibility:** Handles result generation and storage
-
-**Depends on:** UserManagementService, ExamManagementService
+**Depends on:** VehicleService, SlotService
 
 ## 5. Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | React |
-| Backend | Node.js |
+| Frontend | React.js |
+| Backend | Node.js with Express |
 | Database | PostgreSQL |
 | Infrastructure | AWS |
 
@@ -156,12 +184,11 @@ Get exam results
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Scalability issues with high concurrent user load | System performance degradation | Implement load balancing and use a scalable cloud infrastructure |
-| Data breaches due to insecure data storage | Data loss and potential legal issues | Implement encryption and secure data storage practices |
+| High traffic during peak hours | System performance degradation | Implement load balancing and caching strategies |
+| Data breaches | Loss of sensitive data | Implement strong encryption and regular security audits |
 
 ## 7. Open Questions
 
-- What specific authentication mechanisms will be used?
-- How will the system handle time zones for exam scheduling?
-- What is the expected number of concurrent users?
-- Will there be any specific requirements for accessibility?
+- What are the specific vehicle types to be supported?
+- How will the system handle multiple parking lots?
+- What are the payment gateway options to be integrated?
