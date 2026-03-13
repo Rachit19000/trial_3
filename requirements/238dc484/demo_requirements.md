@@ -1,153 +1,188 @@
-Exam Management System
+Parking Lot Management System
 1. Introduction
 1.1 Purpose
 
-The purpose of the Exam Management System is to automate the process of managing examinations in educational institutions. The system allows administrators to create exams, teachers to manage question papers, and students to appear for exams and view results.
+The purpose of the Parking Lot Management System (PLMS) is to automate the management of parking spaces in a parking facility. The system helps users find available parking slots, allows entry and exit tracking of vehicles, and calculates parking fees automatically.
 
 1.2 Scope
 
-The system will allow administrators to manage users and exam schedules. Teachers can create question papers and evaluate results, while students can register for exams, take exams online, and view their results.
+The Parking Lot Management System will:
+
+Manage parking slots for different types of vehicles.
+
+Record vehicle entry and exit.
+
+Calculate parking charges automatically.
+
+Provide real-time information about available parking spaces.
+
+Generate parking reports for administrators.
 
 1.3 Definitions
-
-Student – User who takes the exam.
-
-Teacher – User who creates and manages exams.
-
-Administrator – Person responsible for managing the system.
-
-Exam – Test conducted for evaluating student knowledge.
-
+Term	Description
+PLMS	Parking Lot Management System
+Slot	A parking space allocated for a vehicle
+Ticket	A record generated when a vehicle enters the parking lot
+Admin	Person responsible for managing the parking system
 2. Overall Description
 2.1 Product Perspective
 
-The Exam Management System will be a web-based application connected to a database to manage students, exams, questions, and results.
+The system is a web-based or desktop application that interacts with users and administrators to manage parking operations efficiently.
 
 2.2 Product Functions
 
-Major functions include:
+The system will:
 
-User registration and login
+Register vehicles entering the parking lot.
 
-Exam creation and scheduling
+Allocate parking slots automatically.
 
-Question paper management
+Track parking duration.
 
-Online exam conduction
+Calculate parking fees.
 
-Automatic result generation
+Manage parking slot availability.
+
+Allow admin to view reports and manage slots.
 
 2.3 User Classes
 User Type	Description
-Student	Takes exams and views results
-Teacher	Creates exams and manages questions
-Administrator	Manages users and exam schedules
+Admin	Manages parking slots, fees, and reports
+Parking Staff	Records vehicle entry and exit
+Vehicle Owner	Parks vehicle and pays parking fee
 2.4 Operating Environment
 
-Web browser (Chrome, Firefox, Edge)
+The system can run on:
 
-Backend server (Java / Python / Node)
+Web browsers (Chrome, Edge, Firefox)
 
-Database (MySQL / PostgreSQL)
+Windows/Linux based systems
+
+Cloud or local server
 
 3. Functional Requirements
-FR1: User Registration
+3.1 Vehicle Entry
 
-The system shall allow students and teachers to register in the system.
+The system shall record vehicle details at entry.
 
-FR2: User Login
+The system shall generate a parking ticket.
 
-The system shall allow registered users to log in using their credentials.
+The system shall assign an available parking slot.
 
-FR3: Exam Creation
+3.2 Slot Management
 
-Teachers shall be able to create exams and upload questions.
+The system shall display available parking slots.
 
-FR4: Exam Scheduling
+The system shall update slot status (available/occupied).
 
-The administrator shall schedule exams with date and time.
+The admin shall be able to add or remove parking slots.
 
-FR5: Take Exam
+3.3 Vehicle Exit
 
-Students shall be able to take exams online within the scheduled time.
+The system shall record vehicle exit time.
 
-FR6: Automatic Evaluation
+The system shall calculate parking duration.
 
-The system shall automatically evaluate objective-type questions.
+The system shall generate the parking fee.
 
-FR7: Result Generation
+3.4 Payment Management
 
-The system shall generate results after exam completion.
+The system shall allow payment calculation.
 
-FR8: Result Viewing
+The system shall generate payment receipts.
 
-Students shall be able to view their exam results.
+3.5 Report Generation
+
+The system shall generate reports for:
+
+Daily parking records
+
+Total revenue
+
+Slot utilization
+
+3.6 User Management
+
+The admin shall manage staff accounts.
+
+The system shall authenticate users before login.
 
 4. Non-Functional Requirements
-NFR1: Performance
+4.1 Performance Requirements
 
-The system should handle multiple students taking exams simultaneously.
+The system should process entry and exit requests within 2 seconds.
 
-NFR2: Security
+4.2 Security Requirements
 
-User authentication and data protection must be ensured.
+User authentication should be required for admin access.
 
-NFR3: Usability
+Parking data should be stored securely.
 
-The interface should be simple and easy for students and teachers to use.
+4.3 Reliability
 
-NFR4: Reliability
+The system should be available 24/7.
 
-The system should ensure that exam data and results are accurately stored.
+Data should be backed up regularly.
 
-NFR5: Availability
+4.4 Usability
 
-The system should be available during exam schedules without downtime.
+The interface should be simple and easy to use.
 
 5. System Features
-5.1 User Management
+5.1 Parking Slot Allocation
 
-Register students and teachers
+The system automatically assigns the nearest available parking slot.
 
-Manage user accounts
+5.2 Ticket Generation
 
-5.2 Exam Management
+A unique ticket ID will be generated for each vehicle entering the parking lot.
 
-Create exams
+5.3 Fee Calculation
 
-Schedule exams
+Parking charges will be calculated based on the parking duration.
 
-Manage questions
+Example:
 
-5.3 Result Management
+First hour: ₹20
 
-Evaluate exams
-
-Generate results
-
-Display student scores
+Additional hour: ₹10
 
 6. External Interface Requirements
 6.1 User Interface
 
-A web-based interface for students, teachers, and administrators.
+Dashboard showing parking availability.
 
-6.2 Database Interface
+Entry and exit forms.
 
-The system will store data such as:
+Admin panel for reports.
 
-Student records
+6.2 Hardware Interface
 
-Exam details
+Optional integration with:
 
-Question banks
+Parking sensors
 
-Results
+Automatic barriers
 
-7. Constraints
+License plate recognition cameras
 
-Internet connection required for online exams.
+6.3 Software Interface
 
-Exams must be taken within scheduled time.
+The system may integrate with:
 
-Only registered students can access exams.
+Payment gateways
+
+Database systems (MySQL, PostgreSQL)
+
+7. Assumptions and Constraints
+Assumptions
+
+Internet connectivity is available.
+
+Staff are trained to use the system.
+
+Constraints
+
+Limited parking capacity.
+
+System depends on accurate vehicle entry data.
